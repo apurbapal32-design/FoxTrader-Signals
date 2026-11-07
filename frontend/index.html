@@ -1554,6 +1554,272 @@
       }
     }
 
+  
+    /* ==========================================================================
+       LEFT-SIDE MENU BAR (VERTICAL SIDEBAR & EXPANDABLE DRAWER)
+       ========================================================================== */
+
+    /* Sidebar Toggle Button in Topbar */
+    .sidebar-toggle-btn {
+      background: #181b20;
+      border: 1px solid #282d38;
+      color: #ffb703;
+      font-size: 16px;
+      padding: 4px 9px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .sidebar-toggle-btn:hover {
+      background: #252a32;
+      border-color: #ffb703;
+      box-shadow: 0 0 10px rgba(255, 183, 3, 0.35);
+    }
+
+    /* App Body Layout: Left Sidebar + Content Wrapper */
+    .app-body-layout {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      overflow: hidden;
+      width: 100%;
+      height: calc(100vh - 64px);
+      height: calc(100dvh - 64px);
+      position: relative;
+    }
+
+    .main-content-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+      position: relative;
+      height: 100%;
+    }
+
+    /* Left-Side Menu Bar */
+    .fox-left-sidebar {
+      width: 58px;
+      background: #0d0f12;
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 100;
+      overflow-x: hidden;
+      overflow-y: auto;
+      user-select: none;
+      flex-shrink: 0;
+      scrollbar-width: none;
+    }
+    .fox-left-sidebar::-webkit-scrollbar { display: none; }
+
+    .fox-left-sidebar.expanded {
+      width: 220px;
+    }
+
+    .sidebar-nav-list {
+      display: flex;
+      flex-direction: column;
+      padding: 6px 0;
+      gap: 2px;
+    }
+
+    .sidebar-group-label {
+      display: none;
+      font-size: 9px;
+      font-weight: 800;
+      color: #ffb703;
+      letter-spacing: 0.8px;
+      padding: 10px 14px 4px 14px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .fox-left-sidebar.expanded .sidebar-group-label {
+      display: block;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      margin: 1px 0;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    .sidebar-item.active {
+      background: linear-gradient(90deg, rgba(255, 183, 3, 0.16), rgba(255, 183, 3, 0.03));
+      border-left: 3px solid #ffb703;
+      color: #ffb703;
+      font-weight: 600;
+      box-shadow: inset 1px 0 8px rgba(255, 183, 3, 0.1);
+    }
+
+    .sidebar-icon {
+      font-size: 16px;
+      min-width: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      text-align: center;
+    }
+
+    .sidebar-label {
+      display: none;
+      font-size: 11.5px;
+      font-weight: 500;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .fox-left-sidebar.expanded .sidebar-label {
+      display: block;
+    }
+
+    .sidebar-badge {
+      display: none;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 8px;
+      line-height: 1.2;
+    }
+
+    .fox-left-sidebar.expanded .sidebar-badge {
+      display: inline-block;
+    }
+
+    /* Floating Tooltip in Collapsed Mode */
+    .fox-left-sidebar:not(.expanded) .sidebar-item::after {
+      content: attr(data-title);
+      position: absolute;
+      left: 64px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #181b22;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: 1px solid #333842;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), 0 0 8px rgba(255, 183, 3, 0.2);
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 1000;
+    }
+
+    .fox-left-sidebar:not(.expanded) .sidebar-item:hover::after {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(-50%) translateX(4px);
+    }
+
+    /* Sidebar Footer Toggle */
+    .sidebar-footer {
+      padding: 8px 10px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #090a0d;
+    }
+
+    .sidebar-collapse-btn {
+      width: 100%;
+      background: #16181d;
+      border: 1px solid #282c35;
+      color: var(--text-muted);
+      padding: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .sidebar-collapse-btn:hover {
+      background: #21252d;
+      border-color: #ffb703;
+      color: #ffb703;
+    }
+
+    /* Mobile Sidebar Backdrop */
+    .sidebar-mobile-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 99998;
+    }
+
+    /* Mobile Sidebar Drawer (< 768px) */
+    @media (max-width: 768px) {
+      .app-body-layout {
+        height: auto !important;
+        min-height: calc(100vh - 64px) !important;
+      }
+      .fox-left-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: -280px !important;
+        width: 280px !important;
+        height: 100% !important;
+        z-index: 99999 !important;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.9) !important;
+        transition: left 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      .fox-left-sidebar.mobile-open {
+        left: 0 !important;
+      }
+      .fox-left-sidebar .sidebar-label {
+        display: block !important;
+      }
+      .fox-left-sidebar .sidebar-group-label {
+        display: block !important;
+      }
+      .fox-left-sidebar .sidebar-badge {
+        display: inline-block !important;
+      }
+      .sidebar-mobile-backdrop.open {
+        display: block !important;
+      }
+    }
+
   </style>
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js">
     // --- Mobile Sub-Pane Controller for view-desktop ---
@@ -1648,6 +1914,113 @@
       setTimeout(() => switchMobileSubpane('mw'), 100);
     }
 
+
+    // --- Left-Side Menu Bar Controller ---
+    let sidebarExpanded = false;
+    let sidebarMobileOpen = false;
+
+    function toggleSidebarCollapse() {
+      const sidebar = document.getElementById('foxLeftSidebar');
+      const icon = document.getElementById('sidebarCollapseIcon');
+      const text = document.getElementById('sidebarCollapseText');
+      sidebarExpanded = !sidebarExpanded;
+      if (sidebar) {
+        sidebar.classList.toggle('expanded', sidebarExpanded);
+      }
+      if (icon) icon.innerText = sidebarExpanded ? '⇤' : '⇥';
+      if (text) text.innerText = sidebarExpanded ? 'Collapse Menu' : '';
+      
+      // Re-render canvas charts to adjust width
+      setTimeout(() => {
+        if (typeof renderChart === 'function') {
+          renderChart(1);
+          renderChart(2);
+        }
+      }, 250);
+    }
+
+    function toggleSidebar() {
+      if (window.innerWidth <= 768) {
+        toggleLeftSidebar();
+      } else {
+        toggleSidebarCollapse();
+      }
+    }
+
+    function toggleLeftSidebar(forceState) {
+      sidebarMobileOpen = forceState !== undefined ? forceState : !sidebarMobileOpen;
+      const sidebar = document.getElementById('foxLeftSidebar');
+      const backdrop = document.getElementById('sidebarMobileBackdrop');
+      if (sidebar) sidebar.classList.toggle('mobile-open', sidebarMobileOpen);
+      if (backdrop) backdrop.classList.toggle('open', sidebarMobileOpen);
+    }
+
+    function selectLeftSidebarView(viewName) {
+      // Update sidebar active states
+      document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+      const targetItem = document.querySelector(`.sidebar-item[data-view="${viewName}"]`);
+      if (targetItem) targetItem.classList.add('active');
+
+      // Update old mod-tabs in DOM if present
+      document.querySelectorAll('.mod-tab').forEach(t => {
+        if (t.dataset.view === viewName) t.classList.add('active');
+        else t.classList.remove('active');
+      });
+
+      // Switch active view container
+      document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+      const targetView = document.getElementById(`view-${viewName}`);
+      if (targetView) targetView.classList.add('active');
+
+      // Trigger respective data loaders
+      if (viewName === 'desktop') {
+        setTimeout(() => {
+          if (typeof renderChart === 'function') {
+            renderChart(1);
+            renderChart(2);
+          }
+        }, 60);
+      } else if (viewName === 'broker') {
+        if (typeof checkBrokerLiveStatus === 'function') checkBrokerLiveStatus();
+      } else if (viewName === 'smc') {
+        if (typeof loadSMCView === 'function') {
+          loadSMCView(document.getElementById('smcStockSelect')?.value || 'BAJAJFINSV');
+        }
+      } else if (viewName === 'scanner') {
+        if (typeof fetchInstitutionalScanner === 'function') fetchInstitutionalScanner();
+        if (typeof fetchTop10MomentumSignals === 'function') fetchTop10MomentumSignals();
+        if (typeof fetchSMCActiveUniverse === 'function') fetchSMCActiveUniverse();
+        if (typeof fetchBacktestActiveUniverse === 'function') fetchBacktestActiveUniverse();
+        if (typeof fetchSectorHeatmap === 'function') fetchSectorHeatmap();
+        if (typeof fetchApexQuantStrategy === 'function') fetchApexQuantStrategy();
+        if (typeof fetchScannerSignals === 'function') fetchScannerSignals();
+      } else if (viewName === 'options') {
+        if (typeof loadOptionsView === 'function') {
+          loadOptionsView(document.getElementById('optionsStockSelect')?.value || 'BAJAJFINSV');
+        }
+      } else if (viewName === 'github') {
+        if (typeof fetchGitHubConfig === 'function') fetchGitHubConfig();
+        if (typeof fetchSignalsHistory === 'function') fetchSignalsHistory();
+      } else if (viewName === 'sentinel') {
+        if (typeof fetchAISentinelStatus === 'function') fetchAISentinelStatus();
+      } else if (viewName === 'heatmap') {
+        if (typeof fetchSectorHeatmap === 'function') fetchSectorHeatmap();
+      } else if (viewName === 'apex-quant') {
+        if (typeof fetchApexQuantStrategy === 'function') fetchApexQuantStrategy();
+      } else if (viewName === 'momentum-signals') {
+        if (typeof fetchTop10MomentumSignals === 'function') fetchTop10MomentumSignals();
+      } else if (viewName === 'nocode') {
+        if (typeof loadSavedStrategies === 'function') loadSavedStrategies();
+      } else if (viewName === 'backtest') {
+        if (typeof fetchBacktestActiveUniverse === 'function') fetchBacktestActiveUniverse();
+      }
+
+      // Close mobile drawer if open
+      if (window.innerWidth <= 768) {
+        toggleLeftSidebar(false);
+      }
+    }
+
 </script>
 
 </head>
@@ -1656,6 +2029,7 @@
   <!-- Top Classic Dhan Muhurat Toolbar -->
   <header class="fox-topbar">
     <div class="topbar-left">
+      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Toggle Left Menu Bar">☰</button>
       <div class="fox-logo-badge" style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="switchToTab('desktop')" title="Dhan Muhurat — Invest • Grow • Prosper">
         <img src="/dhan_muhurat_logo.jpg" onerror="this.src='dhan_muhurat_logo.jpg'" alt="Dhan Muhurat" style="height:36px; max-width:54px; border-radius:6px; box-shadow:0 0 14px rgba(255,183,3,0.6); border:1px solid rgba(255,183,3,0.7); object-fit:contain; background:#101214;" />
         <div style="display:flex; flex-direction:column; justify-content:center;">
@@ -1721,7 +2095,7 @@
   </div>
 
   <!-- Module Navigation Tabs -->
-  <nav class="module-nav">
+  <nav class="module-nav" style="display:none;">
     <div class="mod-tab active" data-view="desktop">
       <span>🖥️ Dhan Muhurat Workspace (224 F&amp;O)</span>
     </div>
@@ -1765,8 +2139,157 @@
     </div>
   </nav>
 
-  <!-- Main Workspaces Container -->
-  <main class="workspace-area">
+  
+  <!-- App Body Layout (Left-Side Menu Bar + Workspaces) -->
+  <div class="app-body-layout" id="appBodyLayout">
+
+    <!-- Left-Side Menu Bar (Compact Icon Rail / Expandable Sidebar) -->
+    <aside class="fox-left-sidebar" id="foxLeftSidebar">
+      <div class="sidebar-nav-list">
+        
+        <div class="sidebar-group-label">Trading Terminal</div>
+
+        <!-- 1. Workspace 224 F&O -->
+        <div class="sidebar-item active" data-view="desktop" data-title="Dhan Muhurat Workspace (224 F&O)" onclick="selectLeftSidebarView('desktop')">
+          <span class="sidebar-icon">🖥️</span>
+          <span class="sidebar-label">Dhan Muhurat Workspace</span>
+          <span class="sidebar-badge" style="background:#2ecc71; color:#000;">224</span>
+        </div>
+
+        <!-- 2. APEX-QUANT AI Strategy -->
+        <div class="sidebar-item" data-view="apex-quant" data-title="APEX-QUANT AI (World's Most Powerful Strategy)" onclick="selectLeftSidebarView('apex-quant')">
+          <span class="sidebar-icon">👑</span>
+          <span class="sidebar-label">APEX-QUANT AI</span>
+          <span class="sidebar-badge" style="background:linear-gradient(135deg, #f59e0b, #ef4444); color:#fff;">94%</span>
+        </div>
+
+        <!-- 3. Real-Time Scanner -->
+        <div class="sidebar-item" data-view="scanner" data-title="Real-Time Scanner (200+ Conditions)" onclick="selectLeftSidebarView('scanner')">
+          <span class="sidebar-icon">⚡</span>
+          <span class="sidebar-label">Real-Time Scanner</span>
+          <span class="sidebar-badge" style="background:#ff6b35; color:#fff;">SCAN</span>
+        </div>
+
+        <!-- 4. Sector Heatmap -->
+        <div class="sidebar-item" data-view="heatmap" data-title="Sector Heatmap & Stock Rotation" onclick="selectLeftSidebarView('heatmap')">
+          <span class="sidebar-icon">🗺️</span>
+          <span class="sidebar-label">Sector Heatmap</span>
+          <span class="sidebar-badge" style="background:#10b981; color:#fff;">LIVE</span>
+        </div>
+
+        <!-- 5. Smart Money SMC -->
+        <div class="sidebar-item" data-view="smc" data-title="Smart Money Concepts (SMC & Liquidity)" onclick="selectLeftSidebarView('smc')">
+          <span class="sidebar-icon">🏛️</span>
+          <span class="sidebar-label">Smart Money (SMC)</span>
+        </div>
+
+        <!-- 6. Top 10 Momentum Signals -->
+        <div class="sidebar-item" data-view="momentum-signals" data-title="Top 10 Momentum Signals (VP & OI)" onclick="selectLeftSidebarView('momentum-signals')">
+          <span class="sidebar-icon">🎯</span>
+          <span class="sidebar-label">Top 10 Momentum</span>
+          <span class="sidebar-badge" style="background:#e74c3c; color:#fff;">HOT</span>
+        </div>
+
+        <div class="sidebar-group-label" style="margin-top:8px;">Quant & Algorithms</div>
+
+        <!-- 7. No-Code Strategy Builder -->
+        <div class="sidebar-item" data-view="nocode" data-title="No-Code Strategy Builder" onclick="selectLeftSidebarView('nocode')">
+          <span class="sidebar-icon">🧩</span>
+          <span class="sidebar-label">No-Code Builder</span>
+        </div>
+
+        <!-- 8. Multi-TF Backtester & Replay -->
+        <div class="sidebar-item" data-view="backtest" data-title="Multi-TF Backtester & Replay" onclick="selectLeftSidebarView('backtest')">
+          <span class="sidebar-icon">📊</span>
+          <span class="sidebar-label">Backtester &amp; Replay</span>
+        </div>
+
+        <!-- 9. Options OI & VP -->
+        <div class="sidebar-item" data-view="options" data-title="Volume Profile & Options OI Chain" onclick="selectLeftSidebarView('options')">
+          <span class="sidebar-icon">🎯</span>
+          <span class="sidebar-label">Volume Profile &amp; OI</span>
+        </div>
+
+        <!-- 10. Signals DB & GitHub Sync -->
+        <div class="sidebar-item" data-view="github" data-title="Signal DB & Automated GitHub Sync" onclick="selectLeftSidebarView('github')">
+          <span class="sidebar-icon">🚀</span>
+          <span class="sidebar-label">Signal DB &amp; Cloud Sync</span>
+          <span class="sidebar-badge" style="background:#6366f1; color:#fff;" id="sidebarGithubCount">0</span>
+        </div>
+
+        <div class="sidebar-group-label" style="margin-top:8px;">Execution & Tools</div>
+
+        <!-- 11. Broker API Gateway -->
+        <div class="sidebar-item" data-view="broker" data-title="Broker API Gateway (Fyers / Zerodha / Upstox / Angel / Dhan)" onclick="selectLeftSidebarView('broker')">
+          <span class="sidebar-icon">🔑</span>
+          <span class="sidebar-label">Broker API Gateway</span>
+        </div>
+
+        <!-- 12. Orders Modal -->
+        <div class="sidebar-item" data-title="Orders & Trades Book" onclick="openMenuModal('orders')">
+          <span class="sidebar-icon">📋</span>
+          <span class="sidebar-label">Orders &amp; Positions</span>
+        </div>
+
+        <!-- 13. TradingView Chart Modal -->
+        <div class="sidebar-item" data-title="Open TradingView.com Pro Chart" onclick="openStockTradingView('NIFTY', 'NSE:NIFTY')">
+          <span class="sidebar-icon">📈</span>
+          <span class="sidebar-label">TradingView Pro Chart</span>
+        </div>
+
+        <!-- 14. System Telemetry Monitor -->
+        <div class="sidebar-item" data-title="System Health & Telemetry Monitor" onclick="openMenuModal('monitor')">
+          <span class="sidebar-icon">🖥️</span>
+          <span class="sidebar-label">System Telemetry</span>
+        </div>
+
+        <!-- 15. 224 F&O Universe Directory -->
+        <div class="sidebar-item" data-title="224 F&O Complete Scrips Directory" onclick="openMenuModal('fno')">
+          <span class="sidebar-icon">🏛️</span>
+          <span class="sidebar-label">224 F&amp;O Universe</span>
+        </div>
+
+        <!-- 16. Studies Catalog (300+) -->
+        <div class="sidebar-item" data-title="300+ Quantitative Technical Studies" onclick="openMenuModal('studies')">
+          <span class="sidebar-icon">🧪</span>
+          <span class="sidebar-label">Studies Catalog (300+)</span>
+        </div>
+
+        <!-- 17. AI Sentinel Copilot -->
+        <div class="sidebar-item" data-view="sentinel" data-title="Autonomous AI Sentinel Command Center" onclick="selectLeftSidebarView('sentinel')">
+          <span class="sidebar-icon">🤖</span>
+          <span class="sidebar-label">AI Sentinel Copilot</span>
+          <span class="sidebar-badge" style="background:#8b5cf6; color:#fff;">AI</span>
+        </div>
+
+        <div class="sidebar-group-label" style="margin-top:8px;">Mobile Application</div>
+
+        <!-- 18. Download Android APK -->
+        <a href="/Dhan-Muhurat-v1.0.0.apk" download="Dhan-Muhurat-v1.0.0.apk" class="sidebar-item" data-title="Download Dhan Muhurat Android App (APK v1.0.0)" style="color:#34d399;">
+          <span class="sidebar-icon">📲</span>
+          <span class="sidebar-label">Download Android APK</span>
+          <span class="sidebar-badge" style="background:#10b981; color:#fff;">v1.0</span>
+        </a>
+
+      </div>
+
+      <!-- Sidebar Bottom Collapse / Expand Button -->
+      <div class="sidebar-footer">
+        <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" onclick="toggleSidebarCollapse()" title="Collapse / Expand Left Menu Bar">
+          <span id="sidebarCollapseIcon">⇤</span>
+          <span class="sidebar-label" id="sidebarCollapseText">Collapse Menu</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Mobile Sidebar Dark Backdrop -->
+    <div class="sidebar-mobile-backdrop" id="sidebarMobileBackdrop" onclick="toggleLeftSidebar(false)"></div>
+
+    <!-- Main Content Column Wrapper -->
+    <div class="main-content-wrapper">
+
+      <!-- Main Workspaces Container -->
+      <main class="workspace-area">
 
     <!-- 1. Dhan Muhurat Workspace -->
     <section class="view-container active" id="view-desktop">
@@ -3162,6 +3685,8 @@
     </section>
 
   </main>
+    </div><!-- /.main-content-wrapper -->
+  </div><!-- /.app-body-layout -->
 
   <!-- Bottom Classic Status Bar -->
   <footer class="fox-footer">
@@ -4402,10 +4927,7 @@
     }
 
     function switchToTab(viewName) {
-      const targetTab = document.querySelector(`[data-view="${viewName}"]`);
-      if (targetTab) {
-        targetTab.click();
-      }
+      selectLeftSidebarView(viewName);
     }
 
     // --- Orders Modal Logic ---
