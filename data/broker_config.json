@@ -1,0 +1,27 @@
+{
+  "active_broker": "upstox",
+  "fyers": {
+    "client_id": "RMR62XB492-100",
+    "secret_key": "0WF68SFOJD",
+    "access_token": "",
+    "redirect_uri": "http://127.0.0.1:8088/api/broker/fyers/callback"
+  },
+  "zerodha": {
+    "api_key": "",
+    "access_token": ""
+  },
+  "angel": {
+    "api_key": "",
+    "jwt_token": ""
+  },
+  "dhan": {
+    "client_id": "",
+    "access_token": ""
+  },
+  "upstox": {
+    "api_key": "",
+    "api_secret": "",
+    "access_token": "",
+    "redirect_uri": "http://127.0.0.1:8088/api/broker/upstox/callback"
+  }
+}

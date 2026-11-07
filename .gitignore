@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.apk
+data/
+*.db
+*.bat
+apply_*.py
+generate_*.py

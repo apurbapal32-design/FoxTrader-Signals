@@ -1,0 +1,8 @@
+{
+  "github_token": "",
+  "repo_owner": "apurbapal32-design",
+  "repo_name": "FoxTrader-Signals",
+  "branch": "main",
+  "auto_upload": false,
+  "upload_interval_seconds": 60
+}
