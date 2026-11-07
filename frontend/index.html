@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FoxTrader-Pro | 224 F&amp;O Indices &amp; Stocks Live Terminal</title>
+  <title>Dhan Muhurat | 224 F&amp;O Indices &amp; Stocks Live Terminal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1147,9 +1147,12 @@
   <!-- Top Classic FoxTrader Toolbar -->
   <header class="fox-topbar">
     <div class="topbar-left">
-      <div class="fox-logo-badge">
-        <div class="fox-icon">🦊</div>
-        <span>FoxNet: STAR</span>
+      <div class="fox-logo-badge" style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="switchToTab('desktop')" title="Dhan Muhurat — Invest • Grow • Prosper">
+        <img src="/dhan_muhurat_logo.jpg" onerror="this.src='dhan_muhurat_logo.jpg'" alt="Dhan Muhurat" style="height:36px; max-width:54px; border-radius:6px; box-shadow:0 0 14px rgba(255,183,3,0.6); border:1px solid rgba(255,183,3,0.7); object-fit:contain; background:#101214;" />
+        <div style="display:flex; flex-direction:column; justify-content:center;">
+          <span style="font-weight:900; font-size:15px; color:#ffb703; letter-spacing:0.8px; font-family:'Segoe UI', sans-serif; text-shadow:0 0 10px rgba(255,183,3,0.4);">DHAN MUHURAT</span>
+          <span style="font-size:9px; color:#f1c40f; font-weight:700; letter-spacing:0.5px; line-height:1;">Invest • Grow • Prosper</span>
+        </div>
       </div>
       <nav class="topbar-menu">
         <div class="menu-item" id="topMenuOrders" onclick="openMenuModal('orders')">📋 Orders</div>
@@ -1159,8 +1162,8 @@
         <div class="menu-item" id="topMenuScans" onclick="switchToTab('scanner')">⚡ Scans</div>
         <div class="menu-item" id="topMenuSignals" onclick="switchToTab('github')">🚀 Signals</div>
         <div class="menu-item" id="topMenuStudies" onclick="openMenuModal('studies')">🧪 Studies (300+)</div>
-        <a href="/FoxTrader-Pro-v1.0.0.apk" download="FoxTrader-Pro-v1.0.0.apk" class="menu-item apk-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 700; border: 1px solid #34d399; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 4px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);" title="Download compiled Android APK">
-          <span>📲 Download APK (v1.0.0)</span>
+        <a href="/Dhan-Muhurat-v1.0.0.apk" download="Dhan-Muhurat-v1.0.0.apk" class="menu-item apk-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 700; border: 1px solid #34d399; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 4px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);" title="Download compiled Android APK">
+          <span>📲 Download Dhan Muhurat APK (v1.0.0)</span>
         </a>
       </nav>
     </div>
@@ -1209,7 +1212,7 @@
   <!-- Module Navigation Tabs -->
   <nav class="module-nav">
     <div class="mod-tab active" data-view="desktop">
-      <span>🖥️ FoxTrader Workspace (224 F&amp;O)</span>
+      <span>🖥️ Dhan Muhurat Workspace (224 F&amp;O)</span>
     </div>
     <div class="mod-tab" data-view="broker">
       <span>🔑 Broker API Gateway (Fyers / Zerodha / Angel)</span>
@@ -1656,7 +1659,7 @@
               <option value="zerodha">Zerodha Kite Connect</option>
               <option value="angel">Angel One SmartAPI</option>
               <option value="dhan">Dhan Trading API</option>
-              <option value="live_stream">FoxTrader High-Speed Tick Streamer</option>
+              <option value="live_stream">Dhan Muhurat High-Speed Tick Streamer</option>
             </select>
           </div>
 
@@ -2546,7 +2549,7 @@
       <div class="sentinel-workspace-grid">
         <!-- Left: Telemetry & Audit Stream -->
         <div style="display:flex; flex-direction:column; height:100%; overflow-y:auto;">
-          <div class="smc-title" style="margin-bottom:8px;">🤖 FoxTrader AI Sentinel Watchdog</div>
+          <div class="smc-title" style="margin-bottom:8px;">🤖 Dhan Muhurat AI Sentinel Watchdog</div>
           
           <div class="sentinel-kpi-card">
             <div class="sentinel-kpi-header">
@@ -2621,8 +2624,8 @@
           <!-- Conversation Thread -->
           <div class="ai-chat-thread" id="aiChatThread">
             <div class="ai-message ai-agent-message">
-              <b>🤖 FoxTrader AI Sentinel:</b><br>
-              Hello! I am actively maintaining and monitoring the FoxTrader-Pro platform.<br>
+              <b>🤖 Dhan Muhurat AI Sentinel:</b><br>
+              Hello! I am actively maintaining and monitoring the Dhan Muhurat platform.<br>
               I survey real-time ticks across all 224 F&amp;O instruments, monitor broker connectivity, audit database integrity, execute self-healing protocols, and sync signals to GitHub.<br><br>
               Ask me anything about market breadth, top setups, indicator status, or system health!
             </div>
@@ -3559,7 +3562,7 @@
         `━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
         `📐 Formula: ${formula}`,
         `⚡ Live Status: ${status}`,
-        `🚀 Verified by FoxTrader-Pro Engine • https://github.com/apurbapal32-design/FoxTrader-Signals`
+        `🚀 Verified by Dhan Muhurat Engine • https://github.com/apurbapal32-design/FoxTrader-Signals`
       ].join('\n');
 
       currentSharePayloadText = text;
@@ -4101,7 +4104,7 @@
         document.getElementById('monTickRate').innerText = `${t.ticks_processed_total || 142} Ticks Processed`;
         document.getElementById('monHealthScore').innerText = `${t.health_score || 100}% HEALTHY`;
         document.getElementById('monUniverseCount').innerText = `${t.universe_monitored || 224} Instruments`;
-        document.getElementById('monBrokerName').innerText = b.broker || 'FoxTrader Tick Streamer';
+        document.getElementById('monBrokerName').innerText = b.broker || 'Dhan Muhurat Tick Streamer';
         document.getElementById('monMemMb').innerText = `${t.memory_usage_mb || 124} MB RSS`;
         document.getElementById('monCpuPct').innerText = `${t.cpu_percent || 4.2}%`;
         document.getElementById('monActiveClients').innerText = data.active_clients || 1;
@@ -4327,7 +4330,7 @@
       // Loading bubble
       const agentMsg = document.createElement('div');
       agentMsg.className = 'ai-message ai-agent-message';
-      agentMsg.innerHTML = `<b>🤖 FoxTrader AI Sentinel:</b> <i>Analyzing telemetry & market universe...</i>`;
+      agentMsg.innerHTML = `<b>🤖 Dhan Muhurat AI Sentinel:</b> <i>Analyzing telemetry & market universe...</i>`;
       thread.appendChild(agentMsg);
       thread.scrollTop = thread.scrollHeight;
 
@@ -4346,19 +4349,19 @@
           .replace(/\*(.*?)\*/g, '<i>$1</i>')
           .replace(/`(.*?)`/g, '<code style="background:#222; padding:2px 4px; border-radius:3px;">$1</code>');
 
-        agentMsg.innerHTML = `<b>🤖 FoxTrader AI Sentinel:</b><br>${formatted}`;
+        agentMsg.innerHTML = `<b>🤖 Dhan Muhurat AI Sentinel:</b><br>${formatted}`;
         thread.scrollTop = thread.scrollHeight;
 
         fetchAISentinelStatus();
       } catch (e) {
-        agentMsg.innerHTML = `<b>🤖 FoxTrader AI Sentinel:</b> <span class="text-red">Error querying Sentinel: ${e.message}</span>`;
+        agentMsg.innerHTML = `<b>🤖 Dhan Muhurat AI Sentinel:</b> <span class="text-red">Error querying Sentinel: ${e.message}</span>`;
       }
     }
 
     function clearAIChat() {
       document.getElementById('aiChatThread').innerHTML = `
         <div class="ai-message ai-agent-message">
-          <b>🤖 FoxTrader AI Sentinel:</b><br>Console cleared. Standing by for queries or automated surveillance alerts.
+          <b>🤖 Dhan Muhurat AI Sentinel:</b><br>Console cleared. Standing by for queries or automated surveillance alerts.
         </div>
       `;
     }
@@ -5692,7 +5695,7 @@
 
     <div id="modal-orders" class="fox-modal" style="display:none; max-width:900px;" onclick="event.stopPropagation()">
       <div class="modal-header">
-        <div class="modal-title">📋 FoxTrader Orders &amp; Positions Management</div>
+        <div class="modal-title">📋 Dhan Muhurat Orders &amp; Positions Management</div>
         <button class="modal-close-btn" onclick="closeMenuModal()">&times;</button>
       </div>
       <div class="modal-nav-tabs">
@@ -5870,7 +5873,7 @@
     <!-- 3. System & Stream Monitor Modal -->
     <div id="modal-monitor" class="fox-modal" style="display:none; max-width:820px;" onclick="event.stopPropagation()">
       <div class="modal-header">
-        <div class="modal-title">🖥️ FoxTrader Engine &amp; Live Stream Monitor</div>
+        <div class="modal-title">🖥️ Dhan Muhurat Engine &amp; Live Stream Monitor</div>
         <button class="modal-close-btn" onclick="closeMenuModal()">&times;</button>
       </div>
       <div class="modal-body">
@@ -5966,7 +5969,7 @@
     <!-- 5. 300+ Technical Studies & Indicators Catalog Modal -->
     <div id="modal-studies" class="fox-modal" style="display:none; max-width:1150px;" onclick="event.stopPropagation()">
       <div class="modal-header">
-        <div class="modal-title">🧪 FoxTrader-Pro 300+ Technical Studies &amp; Indicators Catalog</div>
+        <div class="modal-title">🧪 Dhan Muhurat 300+ Technical Studies &amp; Indicators Catalog</div>
         <button class="modal-close-btn" onclick="closeMenuModal()">&times;</button>
       </div>
       <div class="modal-body">

@@ -40,7 +40,7 @@ from claude_trader_skill import ClaudeAITraderSkill, CLAUDE_TRADER_PRESETS
 from live_signal_tracker import LiveSignalTracker
 from institutional_scanner import InstitutionalScannerEngine
 
-app = FastAPI(title="FoxTrader-Pro Platform API", version="3.0.0")
+app = FastAPI(title="Dhan Muhurat Platform API", version="3.0.0")
 
 # CORS middleware
 app.add_middleware(
@@ -1278,12 +1278,21 @@ frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
 if os.path.exists(frontend_dir):
     app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
 
+@app.get("/dhan_muhurat_logo.jpg")
+def serve_logo():
+    logo_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dhan_muhurat_logo.jpg")
+    if os.path.exists(logo_path):
+        return FileResponse(logo_path, media_type="image/jpeg")
+    raise HTTPException(status_code=404, detail="Logo not found")
+
+@app.get("/Dhan-Muhurat-v1.0.0.apk")
 @app.get("/FoxTrader-Pro-v1.0.0.apk")
 @app.get("/api/download/apk")
 def download_apk():
-    apk_path = os.path.join(os.path.dirname(__file__), "..", "FoxTrader-Pro-v1.0.0.apk")
-    if os.path.exists(apk_path):
-        return FileResponse(apk_path, media_type="application/vnd.android.package-archive", filename="FoxTrader-Pro-v1.0.0.apk")
+    for fname in ["Dhan-Muhurat-v1.0.0.apk", "FoxTrader-Pro-v1.0.0.apk"]:
+        apk_path = os.path.join(os.path.dirname(__file__), "..", fname)
+        if os.path.exists(apk_path):
+            return FileResponse(apk_path, media_type="application/vnd.android.package-archive", filename=fname)
     raise HTTPException(status_code=404, detail="APK not found")
 
 @app.get("/")

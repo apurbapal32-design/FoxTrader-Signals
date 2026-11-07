@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: foxtrader-pro
+    name: dhan-muhurat
     runtime: python
     region: singapore
     plan: free
