@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>Dhan Muhurat | 224 F&amp;O Indices &amp; Stocks Live Terminal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1138,8 +1138,517 @@
       background: linear-gradient(135deg, #7c3aed, #4f46e5);
       box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
     }
+  
+    /* ==========================================================================
+       RESPONSIVE DESIGN SYSTEM — DESKTOP & MOBILE VIEW UI/UX ENGINE
+       ========================================================================== */
+
+    /* Custom Modern Slim Scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090a0c;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #252830;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3e4451;
+    }
+
+    /* Mobile Sub-Pane Navigation Bar (view-desktop) */
+    .mobile-subpane-bar {
+      display: none;
+      align-items: center;
+      background: #111316;
+      border-bottom: 1px solid var(--border-color);
+      padding: 6px 8px;
+      gap: 6px;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      z-index: 20;
+    }
+    .mobile-subpane-bar::-webkit-scrollbar { display: none; }
+
+    .m-subpane-btn {
+      background: #181b20;
+      border: 1px solid #282d36;
+      color: var(--text-muted);
+      padding: 7px 13px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+    .m-subpane-btn:active, .m-subpane-btn.active {
+      background: rgba(255, 183, 3, 0.15);
+      border-color: #ffb703;
+      color: #ffb703;
+      font-weight: 700;
+      box-shadow: 0 0 8px rgba(255, 183, 3, 0.25);
+    }
+
+    /* Mobile Quick Menu Hamburger Button */
+    .mobile-menu-btn {
+      display: none;
+      background: #1a1d22;
+      border: 1px solid #363b46;
+      color: #ffb703;
+      font-size: 18px;
+      padding: 4px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      line-height: 1;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .mobile-menu-btn:hover, .mobile-menu-btn:active {
+      background: #252a32;
+      border-color: #ffb703;
+      box-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
+    }
+
+    /* Compact Mobile APK Pill */
+    .mobile-apk-pill {
+      display: none;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 4px;
+      text-decoration: none;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid #34d399;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.35);
+      white-space: nowrap;
+    }
+
+    /* Mobile Drawer & Backdrop */
+    .mobile-drawer-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      animation: fadeIn 0.2s ease;
+    }
+    .mobile-drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 82vw;
+      max-width: 320px;
+      height: 100%;
+      background: #121418;
+      border-left: 1px solid #282d38;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
+      animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow-y: auto;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .mobile-drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: #181b22;
+      border-bottom: 1px solid #282d38;
+    }
+    .mobile-drawer-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+    .mobile-drawer-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #ffb703;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .m-drawer-btn {
+      background: #181c22;
+      border: 1px solid #282e3a;
+      color: #e2e8f0;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 5px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s;
+    }
+    .m-drawer-btn:active, .m-drawer-btn:hover {
+      background: #232832;
+      border-color: #ffb703;
+      color: #ffb703;
+    }
+    .m-apk-download-btn {
+      background: linear-gradient(135deg, #10b981, #047857);
+      color: #fff;
+      font-weight: 700;
+      font-size: 12px;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+      border: 1px solid #34d399;
+    }
+
+    /* Enhanced Touch & Table UX */
+    .fox-table th, .fox-table td {
+      padding: 6px 8px;
+    }
+    .module-nav {
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .module-nav::-webkit-scrollbar { display: none; }
+    .mod-tab { flex-shrink: 0; }
+    .indices-ribbon {
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .indices-ribbon::-webkit-scrollbar { display: none; }
+    .index-item { flex-shrink: 0; }
+
+    /* ==========================================================================
+       MEDIA QUERIES — TABLET & MOBILE BREAKPOINTS
+       ========================================================================== */
+
+    /* TABLETS & SMALL LAPTOPS (<= 992px) */
+    @media (max-width: 992px) {
+      body {
+        height: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-x: hidden;
+      }
+      .workspace-area {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+      .view-container.active {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: 100% !important;
+      }
+
+      /* Desktop Layout switches to responsive mobile stack / subpane control */
+      .mobile-subpane-bar {
+        display: flex !important;
+      }
+      .desktop-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: 500px !important;
+        gap: 8px !important;
+        padding: 6px !important;
+        background: #0c0d0e !important;
+      }
+      .desktop-layout > .fox-panel {
+        grid-column: auto !important;
+        grid-row: auto !important;
+        width: 100% !important;
+        min-height: 380px !important;
+        border-radius: 6px !important;
+      }
+      .charts-split-container {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-column: auto !important;
+        width: 100% !important;
+        gap: 8px !important;
+      }
+      .chart-box {
+        width: 100% !important;
+        height: 320px !important;
+        min-height: 320px !important;
+        border-radius: 6px !important;
+      }
+
+      /* Other Multi-column grids become 1 column */
+      .broker-grid-container,
+      #view-broker > div[style*="grid-template-columns"],
+      #view-nocode div[style*="grid-template-columns"],
+      #view-options > div[style*="grid-template-columns"],
+      #view-smc div[style*="grid-template-columns: 340px 1fr"],
+      #smcDualContainer,
+      #btDualContainer,
+      .sentinel-workspace-grid {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+      }
+
+      /* Modals Responsive */
+      .fox-modal {
+        width: 96vw !important;
+        max-width: 96vw !important;
+      }
+    }
+
+    /* MOBILE PHONES (<= 768px) */
+    @media (max-width: 768px) {
+      /* Topbar Mobile Adaptation */
+      .fox-topbar {
+        height: 44px;
+        padding: 4px 8px;
+      }
+      .topbar-menu {
+        display: none !important;
+      }
+      .mobile-menu-btn {
+        display: flex !important;
+      }
+      .mobile-apk-pill {
+        display: inline-flex !important;
+      }
+      #liveTime {
+        display: none !important;
+      }
+      #brokerStatusPill span {
+        max-width: 90px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      #aiSentinelPill {
+        padding: 2px 6px;
+      }
+      #topAiStatusText {
+        display: none;
+      }
+
+      /* Module Nav Tabs */
+      .mod-tab {
+        padding: 9px 12px;
+        font-size: 11px;
+      }
+
+      /* Grids: 5 and 4 columns collapse to 2 columns */
+      .scanner-perf-ribbon,
+      div[style*="grid-template-columns: repeat(5, 1fr)"],
+      div[style*="grid-template-columns: repeat(4, 1fr)"],
+      div[style*="grid-template-columns: repeat(3, 1fr)"],
+      .layout-picker-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
+      }
+
+      #sectorHeatmapGrid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+        gap: 6px !important;
+      }
+
+      /* Modals Touch Optimization */
+      .modal-backdrop {
+        padding: 4px !important;
+        align-items: flex-end !important;
+      }
+      .fox-modal {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        height: 94vh !important;
+        max-height: 94vh !important;
+        border-radius: 12px 12px 0 0 !important;
+        margin: 0 !important;
+      }
+      #modal-tradingview {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        height: 94vh !important;
+      }
+      .modal-header {
+        padding: 10px 12px !important;
+        min-height: 48px !important;
+      }
+      .modal-close-btn {
+        font-size: 22px !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      /* Bottom Footer Status Bar */
+      .fox-footer {
+        height: auto;
+        min-height: 26px;
+        padding: 4px 8px;
+        flex-direction: column;
+        gap: 4px;
+        padding-bottom: max(6px, env(safe-area-inset-bottom));
+      }
+      .fox-footer > div:last-child {
+        display: none !important;
+      }
+
+      /* Touch targets for buttons */
+      .fox-btn {
+        min-height: 34px;
+      }
+      .fox-table td {
+        padding: 7px 6px;
+      }
+    }
+
+    /* COMPACT PHONES (<= 480px) */
+    @media (max-width: 480px) {
+      .fox-logo-badge img {
+        height: 28px !important;
+        max-width: 42px !important;
+      }
+      .fox-logo-badge span:first-child {
+        font-size: 13px !important;
+      }
+      .fox-logo-badge span:last-child {
+        display: none !important;
+      }
+      .chart-box {
+        height: 280px !important;
+        min-height: 280px !important;
+      }
+      .scanner-perf-ribbon {
+        grid-template-columns: 1fr 1fr !important;
+      }
+    }
+
   </style>
-  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js">
+    // --- Mobile Sub-Pane Controller for view-desktop ---
+    let currentMobileSubpane = 'mw';
+
+    function switchMobileSubpane(pane) {
+      currentMobileSubpane = pane;
+      document.querySelectorAll('.m-subpane-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.querySelector(`.m-subpane-btn[onclick*="'${pane}'"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const pMw = document.getElementById('pane-market-watch');
+      const pTw = document.getElementById('pane-tick-watch');
+      const pGs = document.getElementById('pane-group-scan');
+      const pCh = document.getElementById('pane-charts');
+
+      if (window.innerWidth <= 992) {
+        if (pane === 'mw') {
+          if (pMw) pMw.style.display = 'flex';
+          if (pTw) pTw.style.display = 'none';
+          if (pGs) pGs.style.display = 'none';
+          if (pCh) pCh.style.display = 'none';
+        } else if (pane === 'tw') {
+          if (pMw) pMw.style.display = 'none';
+          if (pTw) pTw.style.display = 'flex';
+          if (pGs) pGs.style.display = 'none';
+          if (pCh) pCh.style.display = 'none';
+        } else if (pane === 'gs') {
+          if (pMw) pMw.style.display = 'none';
+          if (pTw) pTw.style.display = 'none';
+          if (pGs) pGs.style.display = 'flex';
+          if (pCh) pCh.style.display = 'none';
+        } else if (pane === 'charts') {
+          if (pMw) pMw.style.display = 'none';
+          if (pTw) pTw.style.display = 'none';
+          if (pGs) pGs.style.display = 'none';
+          if (pCh) pCh.style.display = 'flex';
+          setTimeout(() => { renderChart(1); renderChart(2); }, 60);
+        } else { // 'all'
+          if (pMw) pMw.style.display = 'flex';
+          if (pTw) pTw.style.display = 'flex';
+          if (pGs) pGs.style.display = 'flex';
+          if (pCh) pCh.style.display = 'flex';
+          setTimeout(() => { renderChart(1); renderChart(2); }, 60);
+        }
+      } else {
+        // Desktop view: all panels visible in grid
+        if (pMw) pMw.style.display = '';
+        if (pTw) pTw.style.display = '';
+        if (pGs) pGs.style.display = '';
+        if (pCh) pCh.style.display = '';
+        renderChart(1);
+        renderChart(2);
+      }
+    }
+
+    // --- Mobile Quick Menu Drawer Toggle ---
+    let mobileMenuOpen = false;
+    function toggleMobileMenu(forceState) {
+      mobileMenuOpen = forceState !== undefined ? forceState : !mobileMenuOpen;
+      const drawerBackdrop = document.getElementById('mobileDrawerBackdrop');
+      if (drawerBackdrop) {
+        drawerBackdrop.style.display = mobileMenuOpen ? 'block' : 'none';
+      }
+    }
+
+    // --- Window Resize & Orientation Responsive Listener ---
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (window.innerWidth > 992) {
+          const pMw = document.getElementById('pane-market-watch');
+          const pTw = document.getElementById('pane-tick-watch');
+          const pGs = document.getElementById('pane-group-scan');
+          const pCh = document.getElementById('pane-charts');
+          if (pMw) pMw.style.display = '';
+          if (pTw) pTw.style.display = '';
+          if (pGs) pGs.style.display = '';
+          if (pCh) pCh.style.display = '';
+          toggleMobileMenu(false);
+        } else {
+          switchMobileSubpane(currentMobileSubpane);
+        }
+        renderChart(1);
+        renderChart(2);
+      }, 150);
+    });
+
+    // Initial check for mobile on startup
+    if (window.innerWidth <= 992) {
+      setTimeout(() => switchMobileSubpane('mw'), 100);
+    }
+
+</script>
 
 </head>
 <body>
@@ -1178,6 +1687,8 @@
         <span id="brokerStatusText">Broker: Fyers API v3</span>
       </div>
       <div id="liveTime" style="color: #fff; font-weight: 600;">01:02:00 PM</div>
+      <a href="/Dhan-Muhurat-v1.0.0.apk" download="Dhan-Muhurat-v1.0.0.apk" class="mobile-apk-pill" title="Download Dhan Muhurat APK">📲 APK</a>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" title="Quick Actions Menu">☰</button>
     </div>
   </header>
 
@@ -1259,10 +1770,18 @@
 
     <!-- 1. Dhan Muhurat Workspace -->
     <section class="view-container active" id="view-desktop">
+      <!-- Mobile Sub-Pane Controller (Touch Switcher for Mobile & Tablet) -->
+      <div class="mobile-subpane-bar" id="mobileSubpaneBar">
+        <button class="m-subpane-btn active" id="btnSubpaneMw" onclick="switchMobileSubpane('mw')">📋 Watchlist (224)</button>
+        <button class="m-subpane-btn" id="btnSubpaneTw" onclick="switchMobileSubpane('tw')">⚡ Live Ticks</button>
+        <button class="m-subpane-btn" id="btnSubpaneGs" onclick="switchMobileSubpane('gs')">🎯 Group Scan</button>
+        <button class="m-subpane-btn" id="btnSubpaneCharts" onclick="switchMobileSubpane('charts')">📊 Live Charts</button>
+        <button class="m-subpane-btn" id="btnSubpaneAll" onclick="switchMobileSubpane('all')">📑 Stack All</button>
+      </div>
       <div class="desktop-layout">
         
         <!-- Pane 1: Market Watch (224 Instruments + Filters) -->
-        <div class="fox-panel" style="grid-row: 1 / 2; grid-column: 1 / 2;">
+        <div class="fox-panel" id="pane-market-watch" style="grid-row: 1 / 2; grid-column: 1 / 2;">
           <div class="panel-header">
             <span>1. Market Watch (<span id="mwCount">224</span>)</span>
             <div class="panel-header-controls">
@@ -1307,7 +1826,7 @@
         </div>
 
         <!-- Pane 2: Tick Watch -->
-        <div class="fox-panel" style="grid-row: 1 / 2; grid-column: 2 / 3;">
+        <div class="fox-panel" id="pane-tick-watch" style="grid-row: 1 / 2; grid-column: 2 / 3;">
           <div class="panel-header">
             <span>2. PHL - Tick Watch</span>
             <div class="panel-header-controls">
@@ -1333,7 +1852,7 @@
         </div>
 
         <!-- Pane 3 & 4: Star Bull & Golden Cross Group Scan -->
-        <div class="fox-panel" style="grid-row: 1 / 2; grid-column: 3 / 4;">
+        <div class="fox-panel" id="pane-group-scan" style="grid-row: 1 / 2; grid-column: 3 / 4;">
           <div class="panel-header">
             <span>5. Golden Cross / Group Scan (All Studies)</span>
             <div class="panel-header-controls">
@@ -1362,7 +1881,7 @@
         </div>
 
         <!-- Pane 5: Bottom Split Multi-Charts -->
-        <div class="charts-split-container">
+        <div class="charts-split-container" id="pane-charts">
           <!-- Chart 1: BAJAJFINSV 5m -->
           <div class="chart-box" id="chartBox1">
             <div class="chart-toolbar">
@@ -1646,7 +2165,7 @@
 
     <!-- 2. Broker API Connectivity & Account Settings -->
     <section class="view-container" id="view-broker">
-      <div style="display:grid; grid-template-columns: 460px 1fr; gap:10px; padding:12px; width:100%; height:100%;">
+      <div class="broker-grid-container" style="display:grid; grid-template-columns: 460px 1fr; gap:10px; padding:12px; width:100%; height:100%;">
         <div class="smc-card">
           <div class="smc-title">🔑 Broker API Gateway &amp; Live Feeds</div>
           <p style="color:var(--text-muted); font-size:11px;">Connect your live broker account to stream tick-by-tick market data across all 224 F&amp;O instruments.</p>
@@ -6047,5 +6566,51 @@
   </div>
 
 <div id="foxToast" class="fox-toast">Notification</div>
+
+  <!-- Mobile Navigation & Quick Actions Drawer -->
+  <div class="mobile-drawer-backdrop" id="mobileDrawerBackdrop" onclick="toggleMobileMenu(false)">
+    <div class="mobile-drawer" id="mobileDrawer" onclick="event.stopPropagation()">
+      <div class="mobile-drawer-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <img src="/dhan_muhurat_logo.jpg" onerror="this.src='dhan_muhurat_logo.jpg'" alt="Dhan Muhurat" style="height:28px; border-radius:4px; box-shadow:0 0 8px rgba(255,183,3,0.5);" />
+          <div>
+            <div style="font-weight:900; color:#ffb703; font-size:13px; line-height:1.1;">DHAN MUHURAT</div>
+            <div style="font-size:8px; color:#f1c40f;">Invest • Grow • Prosper</div>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="toggleMobileMenu(false)" style="color:#ffb703; font-size:24px; padding:4px 8px;">&times;</button>
+      </div>
+      <div class="mobile-drawer-body">
+        <div class="mobile-drawer-section-title">QUICK TERMINAL TOOLS</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <button class="m-drawer-btn" onclick="openMenuModal('orders'); toggleMobileMenu(false);">📋 Orders &amp; Trades</button>
+          <button class="m-drawer-btn" onclick="openMenuModal('charts'); toggleMobileMenu(false);">📈 Multi-Timeframe Charts</button>
+          <button class="m-drawer-btn" onclick="openMenuModal('monitor'); toggleMobileMenu(false);">🖥️ System Telemetry</button>
+          <button class="m-drawer-btn" onclick="openMenuModal('fno'); toggleMobileMenu(false);">🏛️ 224 F&amp;O Scrips Universe</button>
+          <button class="m-drawer-btn" onclick="openMenuModal('studies'); toggleMobileMenu(false);">🧪 300+ Studies Catalog</button>
+          <button class="m-drawer-btn" onclick="openMenuModal('sentinel'); toggleMobileMenu(false);">🤖 AI Sentinel Copilot</button>
+        </div>
+
+        <div class="mobile-drawer-section-title" style="margin-top:14px;">WORKSPACE VIEWS</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <button class="m-drawer-btn" onclick="switchToTab('desktop'); toggleMobileMenu(false);">🖥️ Dhan Muhurat Terminal</button>
+          <button class="m-drawer-btn" onclick="switchToTab('scanner'); toggleMobileMenu(false);">⚡ Real-Time Scanner</button>
+          <button class="m-drawer-btn" onclick="switchToTab('heatmap'); toggleMobileMenu(false);">🗺️ Sector Heatmap</button>
+          <button class="m-drawer-btn" onclick="switchToTab('apex-quant'); toggleMobileMenu(false);">👑 APEX-QUANT Strategy</button>
+          <button class="m-drawer-btn" onclick="switchToTab('smc'); toggleMobileMenu(false);">🏛️ Smart Money (SMC)</button>
+          <button class="m-drawer-btn" onclick="switchToTab('momentum-signals'); toggleMobileMenu(false);">🎯 Top 10 Momentum</button>
+          <button class="m-drawer-btn" onclick="switchToTab('broker'); toggleMobileMenu(false);">🔑 Broker Gateway</button>
+          <button class="m-drawer-btn" onclick="switchToTab('github'); toggleMobileMenu(false);">🚀 Signal DB &amp; Sync</button>
+        </div>
+
+        <div style="margin-top:16px;">
+          <a href="/Dhan-Muhurat-v1.0.0.apk" download="Dhan-Muhurat-v1.0.0.apk" class="m-apk-download-btn">
+            📲 Download Dhan Muhurat APK (v1.0.0)
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
