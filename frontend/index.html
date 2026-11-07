@@ -237,7 +237,7 @@
       height: 100%;
       display: grid;
       grid-template-columns: 280px 230px 1fr;
-      grid-template-rows: 250px 1fr;
+      grid-template-rows: minmax(280px, 38vh) 1fr;
       gap: 2px;
       background-color: #08090a;
     }
@@ -1586,10 +1586,9 @@
       display: flex;
       flex-direction: row;
       flex: 1;
+      min-height: 0;
       overflow: hidden;
       width: 100%;
-      height: calc(100vh - 64px);
-      height: calc(100dvh - 64px);
       position: relative;
     }
 
@@ -1820,6 +1819,36 @@
       }
     }
 
+  
+    /* Polished Table UI & Sticky Symbol Column */
+    .fox-table tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.015);
+    }
+    .fox-table tr:hover {
+      background-color: rgba(255, 183, 3, 0.08) !important;
+    }
+    .fox-table tr.selected {
+      background-color: rgba(255, 183, 3, 0.18) !important;
+      border-left: 3px solid #ffb703 !important;
+    }
+
+    .scanner-institutional-table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .scanner-institutional-table th:first-child,
+    .scanner-institutional-table td:first-child {
+      position: sticky;
+      left: 0;
+      background: #14171c;
+      z-index: 5;
+      box-shadow: 2px 0 6px rgba(0, 0, 0, 0.45);
+    }
+    .scanner-institutional-table th:first-child {
+      z-index: 15;
+      background: #1a1d22;
+    }
+
   </style>
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js">
     // --- Mobile Sub-Pane Controller for view-desktop ---
@@ -1836,7 +1865,20 @@
       const pGs = document.getElementById('pane-group-scan');
       const pCh = document.getElementById('pane-charts');
 
+      const dl = document.querySelector('.desktop-layout');
       if (window.innerWidth <= 992) {
+        if (dl) {
+          dl.style.overflow = (pane === 'all' || pane === 'charts') ? 'auto' : 'hidden';
+          dl.style.height = '100%';
+          dl.style.flex = '1';
+        }
+        [pMw, pTw, pGs, pCh].forEach(p => {
+          if (p) {
+            p.style.flex = (pane === 'all') ? '' : '1';
+            p.style.height = (pane === 'all') ? '' : '100%';
+            p.style.minHeight = (pane === 'all') ? '340px' : '0';
+          }
+        });
         if (pane === 'mw') {
           if (pMw) pMw.style.display = 'flex';
           if (pTw) pTw.style.display = 'none';
@@ -1866,11 +1908,19 @@
           setTimeout(() => { renderChart(1); renderChart(2); }, 60);
         }
       } else {
-        // Desktop view: all panels visible in grid
-        if (pMw) pMw.style.display = '';
-        if (pTw) pTw.style.display = '';
-        if (pGs) pGs.style.display = '';
-        if (pCh) pCh.style.display = '';
+        if (dl) {
+          dl.style.overflow = '';
+          dl.style.height = '';
+          dl.style.flex = '';
+        }
+        [pMw, pTw, pGs, pCh].forEach(p => {
+          if (p) {
+            p.style.display = '';
+            p.style.flex = '';
+            p.style.height = '';
+            p.style.minHeight = '';
+          }
+        });
         renderChart(1);
         renderChart(2);
       }
@@ -3444,7 +3494,7 @@
 
     <!-- 7. Volume Profile & Options -->
     <section class="view-container" id="view-options">
-      <div style="width:100%; height:100%; display:grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; gap:4px; padding:4px;">
+      <div class="options-grid-container" style="width:100%; height:100%; display:grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; gap:4px; padding:4px;">
         <div style="grid-column: 1 / -1; display:flex; justify-content:space-between; align-items:center; background:#181b20; padding:8px 12px; border-radius:4px; border:1px solid #232832;">
           <div style="display:flex; align-items:center; gap:10px;">
             <span style="font-weight:700; color:#ff6b35; font-size:12px;">🎯 Active Scrip:</span>
@@ -4063,10 +4113,14 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       
-      const width = canvas.parentElement.clientWidth;
-      const height = canvas.parentElement.clientHeight;
-      canvas.width = width;
-      canvas.height = height;
+      const width = canvas.parentElement.clientWidth || 300;
+      const height = canvas.parentElement.clientHeight || 200;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       ctx.clearRect(0, 0, width, height);
 
