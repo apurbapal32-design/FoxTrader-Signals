@@ -1780,27 +1780,62 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.82);
       backdrop-filter: blur(4px);
       z-index: 99998;
     }
 
-    /* Mobile Sidebar Drawer (< 768px) */
-    @media (max-width: 768px) {
+    /* Sidebar Top Header (Drawer Mode) */
+    .sidebar-top-header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: #14171d;
+      border-bottom: 1px solid #232730;
+      flex-shrink: 0;
+    }
+    .sidebar-close-btn {
+      background: #1e222a;
+      border: 1px solid #363c48;
+      color: #ffb703;
+      font-size: 20px;
+      line-height: 1;
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .sidebar-close-btn:hover {
+      background: #ff4757;
+      color: #fff;
+      border-color: #ff4757;
+    }
+
+    /* Mobile & Tablet Sidebar Drawer (<= 992px) */
+    @media (max-width: 992px) {
       .app-body-layout {
-        height: auto !important;
-        min-height: calc(100vh - 64px) !important;
+        overflow: visible !important;
+      }
+      .sidebar-top-header {
+        display: flex !important;
       }
       .fox-left-sidebar {
         position: fixed !important;
         top: 0 !important;
         bottom: 0 !important;
-        left: -280px !important;
-        width: 280px !important;
+        left: -310px !important;
+        width: 290px !important;
         height: 100% !important;
+        height: 100dvh !important;
         z-index: 99999 !important;
-        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.9) !important;
+        box-shadow: 12px 0 35px rgba(0, 0, 0, 0.95) !important;
         transition: left 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        background: #0d0f13 !important;
       }
       .fox-left-sidebar.mobile-open {
         left: 0 !important;
@@ -1817,6 +1852,7 @@
       .sidebar-mobile-backdrop.open {
         display: block !important;
       }
+    }
     }
 
   
@@ -1850,7 +1886,8 @@
     }
 
   </style>
-  <script type="text/javascript" src="https://s3.tradingview.com/tv.js">
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <script>
     // --- Mobile Sub-Pane Controller for view-desktop ---
     let currentMobileSubpane = 'mw';
 
@@ -1990,7 +2027,7 @@
     }
 
     function toggleSidebar() {
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 992) {
         toggleLeftSidebar();
       } else {
         toggleSidebarCollapse();
@@ -2001,7 +2038,12 @@
       sidebarMobileOpen = forceState !== undefined ? forceState : !sidebarMobileOpen;
       const sidebar = document.getElementById('foxLeftSidebar');
       const backdrop = document.getElementById('sidebarMobileBackdrop');
-      if (sidebar) sidebar.classList.toggle('mobile-open', sidebarMobileOpen);
+      if (sidebar) {
+        sidebar.classList.toggle('mobile-open', sidebarMobileOpen);
+        if (sidebarMobileOpen) {
+          sidebar.classList.add('expanded');
+        }
+      }
       if (backdrop) backdrop.classList.toggle('open', sidebarMobileOpen);
     }
 
@@ -2066,7 +2108,7 @@
       }
 
       // Close mobile drawer if open
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 992) {
         toggleLeftSidebar(false);
       }
     }
@@ -2079,7 +2121,7 @@
   <!-- Top Classic Dhan Muhurat Toolbar -->
   <header class="fox-topbar">
     <div class="topbar-left">
-      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Toggle Left Menu Bar">☰</button>
+      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Toggle Left Navigation Menu"><span style="font-size:15px; line-height:1;">☰</span><span style="font-size:11px; font-weight:800; margin-left:5px; letter-spacing:0.5px;">MENU</span></button>
       <div class="fox-logo-badge" style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="switchToTab('desktop')" title="Dhan Muhurat — Invest • Grow • Prosper">
         <img src="/dhan_muhurat_logo.jpg" onerror="this.src='dhan_muhurat_logo.jpg'" alt="Dhan Muhurat" style="height:36px; max-width:54px; border-radius:6px; box-shadow:0 0 14px rgba(255,183,3,0.6); border:1px solid rgba(255,183,3,0.7); object-fit:contain; background:#101214;" />
         <div style="display:flex; flex-direction:column; justify-content:center;">
@@ -2112,7 +2154,7 @@
       </div>
       <div id="liveTime" style="color: #fff; font-weight: 600;">01:02:00 PM</div>
       <a href="/Dhan-Muhurat-v1.0.0.apk" download="Dhan-Muhurat-v1.0.0.apk" class="mobile-apk-pill" title="Download Dhan Muhurat APK">📲 APK</a>
-      <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" title="Quick Actions Menu">☰</button>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()" title="Toggle Navigation Menu"><span style="font-size:14px; line-height:1;">☰</span><span style="font-size:11px; font-weight:800; margin-left:4px;">MENU</span></button>
     </div>
   </header>
 
@@ -2145,45 +2187,45 @@
   </div>
 
   <!-- Module Navigation Tabs -->
-  <nav class="module-nav" style="display:none;">
-    <div class="mod-tab active" data-view="desktop">
+  <nav class="module-nav" id="moduleNav">
+    <div class="mod-tab active" data-view="desktop" onclick="selectLeftSidebarView('desktop')">
       <span>🖥️ Dhan Muhurat Workspace (224 F&amp;O)</span>
     </div>
-    <div class="mod-tab" data-view="broker">
+    <div class="mod-tab" data-view="broker" onclick="selectLeftSidebarView('broker')">
       <span>🔑 Broker API Gateway (Fyers / Zerodha / Angel)</span>
     </div>
-    <div class="mod-tab" data-view="smc">
+    <div class="mod-tab" data-view="smc" onclick="selectLeftSidebarView('smc')">
       <span>🏛️ Smart Money (SMC)</span>
     </div>
-    <div class="mod-tab" data-view="scanner">
+    <div class="mod-tab" data-view="scanner" onclick="selectLeftSidebarView('scanner')">
       <span>⚡ Real-Time Scanner (200+ Conditions)</span>
     </div>
-    <div class="mod-tab" data-view="apex-quant">
+    <div class="mod-tab" data-view="apex-quant" onclick="selectLeftSidebarView('apex-quant')">
         <span>🧠 APEX-QUANT AI (World's Most Powerful Strategy)</span>
         <span class="badge-count" style="background:linear-gradient(135deg, #f59e0b, #ef4444); color:#fff; font-weight:800;">APEX 94%</span>
       </div>
-      <div class="mod-tab" data-view="heatmap">
+      <div class="mod-tab" data-view="heatmap" onclick="selectLeftSidebarView('heatmap')">
         <span>🗺️ Sector Heatmap</span>
         <span class="badge-count" style="background:#10b981;">LIVE</span>
       </div>
-      <div class="mod-tab" data-view="momentum-signals">
+      <div class="mod-tab" data-view="momentum-signals" onclick="selectLeftSidebarView('momentum-signals')">
       <span>🎯 Top 10 Momentum (VP &amp; Options OI)</span>
       <span class="badge-count" style="background:#ff6b35;">HOT</span>
     </div>
-    <div class="mod-tab" data-view="nocode">
+    <div class="mod-tab" data-view="nocode" onclick="selectLeftSidebarView('nocode')">
       <span>🧩 No-Code Strategy Builder</span>
     </div>
-    <div class="mod-tab" data-view="backtest">
+    <div class="mod-tab" data-view="backtest" onclick="selectLeftSidebarView('backtest')">
       <span>📊 Multi-TF Backtester &amp; Replay</span>
     </div>
-    <div class="mod-tab" data-view="options">
+    <div class="mod-tab" data-view="options" onclick="selectLeftSidebarView('options')">
       <span>🎯 Volume Profile &amp; Options OI</span>
     </div>
-    <div class="mod-tab" data-view="github">
+    <div class="mod-tab" data-view="github" onclick="selectLeftSidebarView('github')">
       <span>🚀 Signal DB &amp; GitHub Sync</span>
       <span class="badge-count" id="githubSignalsCount">0</span>
     </div>
-    <div class="mod-tab" data-view="sentinel">
+    <div class="mod-tab" data-view="sentinel" onclick="selectLeftSidebarView('sentinel')">
       <span>🤖 AI Sentinel (Autonomous Agent)</span>
       <span class="badge-count" style="background:#8b5cf6;" id="sentinelTabBadge">HEALTHY</span>
     </div>
@@ -2195,6 +2237,17 @@
 
     <!-- Left-Side Menu Bar (Compact Icon Rail / Expandable Sidebar) -->
     <aside class="fox-left-sidebar" id="foxLeftSidebar">
+      <!-- Sidebar Drawer Header (Visible on Mobile / Drawer Mode) -->
+      <div class="sidebar-top-header" id="sidebarTopHeader">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <img src="/dhan_muhurat_logo.jpg" onerror="this.src='dhan_muhurat_logo.jpg'" alt="Dhan Muhurat" style="height:28px; border-radius:4px; box-shadow:0 0 8px rgba(255,183,3,0.5); border:1px solid rgba(255,183,3,0.6);" />
+          <div>
+            <div style="font-weight:900; color:#ffb703; font-size:13px; line-height:1.1; letter-spacing:0.5px;">DHAN MUHURAT</div>
+            <div style="font-size:8px; color:#f1c40f; font-weight:700;">Invest • Grow • Prosper</div>
+          </div>
+        </div>
+        <button class="sidebar-close-btn" onclick="toggleLeftSidebar(false)" title="Close Navigation Drawer">&times;</button>
+      </div>
       <div class="sidebar-nav-list">
         
         <div class="sidebar-group-label">Trading Terminal</div>
@@ -3768,49 +3821,19 @@
     let chartCache = {};
     let ws = null;
 
-    // Tab Navigation
+    // Tab Navigation Sync
     document.querySelectorAll('.mod-tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        document.querySelectorAll('.mod-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
-        tab.classList.add('active');
-        const viewId = `view-${tab.dataset.view}`;
-        const targetView = document.getElementById(viewId);
-        if (targetView) targetView.classList.add('active');
-
-        if (tab.dataset.view === 'desktop') {
-          renderChart(1);
-          renderChart(2);
-        } else if (tab.dataset.view === 'broker') {
-          checkBrokerLiveStatus();
-        } else if (tab.dataset.view === 'smc') {
-          loadSMCView(document.getElementById('smcStockSelect')?.value || 'BAJAJFINSV');
-        } else if (tab.dataset.view === 'scanner') {
-          fetchInstitutionalScanner();
-      fetchTop10MomentumSignals();
-      fetchSMCActiveUniverse();
-      fetchBacktestActiveUniverse();
-      fetchSectorHeatmap();
-      fetchApexQuantStrategy();
-      fetchScannerSignals();
-        } else if (tab.dataset.view === 'options') {
-          const optSym = document.getElementById('optionsStockSelect')?.value || 'BAJAJFINSV';
-          loadOptionsView(optSym);
-        } else if (tab.dataset.view === 'github') {
-          loadGitHubConfig();
-          updateSignalsTable();
-        } else if (tab.dataset.view === 'sentinel') {
-          fetchAISentinelStatus();
-        } else if (tab.dataset.view === 'heatmap') {
-          fetchSectorHeatmap();
-        } else if (tab.dataset.view === 'apex-quant') {
-          fetchApexQuantStrategy();
+        if (typeof selectLeftSidebarView === 'function') {
+          selectLeftSidebarView(tab.dataset.view);
         }
       });
     });
 
     function switchToBrokerTab() {
-      document.querySelector('[data-view="broker"]').click();
+      if (typeof selectLeftSidebarView === 'function') {
+        selectLeftSidebarView('broker');
+      }
     }
 
     // Live Clock
