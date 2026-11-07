@@ -1,5 +1,5 @@
 """
-FoxTrader-Pro Multi-Broker Gateway
+Dhan Muhurat Multi-Broker Gateway
 Supports Upstox API v2, Fyers API v3, Zerodha Kite Connect, Angel One SmartAPI, Dhan, and Live Streamer.
 Provides unified live quote streaming and historical data for all 224 F&O indices & stocks.
 """
@@ -264,7 +264,7 @@ class BrokerGateway:
 
         return {
             "connected": True,
-            "broker": "FoxTrader Live Tick Streamer",
+            "broker": "Dhan Muhurat Live Tick Streamer",
             "status": "Active (Streaming 224 Instruments)"
         }
 

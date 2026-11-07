@@ -1,5 +1,5 @@
 """
-FoxTrader-Pro Main Application Server
+Dhan Muhurat Platform Main Application Server
 FastAPI + WebSockets + Background Scanning + GitHub Sync Engine + Autonomous AI Sentinel + Live Signal Lifecycle Tracker
 """
 
@@ -961,14 +961,14 @@ def handle_upstox_callback(code: str = Query(None), error: str = Query(None)):
         <html><body style="background:#0b0d10; color:#fff; font-family:sans-serif; text-align:center; padding-top:60px;">
           <h2 style="color:#e74c3c;">❌ Upstox Authorization Denied</h2>
           <p>{error}</p>
-          <a href="/" style="color:#ff6b35;">Return to FoxTrader Workspace &rarr;</a>
+          <a href="/" style="color:#ff6b35;">Return to Dhan Muhurat Workspace &rarr;</a>
         </body></html>
         """)
     if not code:
         return HTMLResponse("""
         <html><body style="background:#0b0d10; color:#fff; font-family:sans-serif; text-align:center; padding-top:60px;">
           <h2 style="color:#e74c3c;">Authorization Code Missing</h2>
-          <a href="/" style="color:#ff6b35;">Return to FoxTrader Workspace &rarr;</a>
+          <a href="/" style="color:#ff6b35;">Return to Dhan Muhurat Workspace &rarr;</a>
         </body></html>
         """)
 
@@ -984,7 +984,7 @@ def handle_upstox_callback(code: str = Query(None), error: str = Query(None)):
             <script>
               setTimeout(() => { window.location.href = '/'; }, 2000);
             </script>
-            <a href="/" style="color:#ff6b35; text-decoration:none; font-weight:bold;">Return to FoxTrader Workspace &rarr;</a>
+            <a href="/" style="color:#ff6b35; text-decoration:none; font-weight:bold;">Return to Dhan Muhurat Workspace &rarr;</a>
           </body>
         </html>
         """)
@@ -993,7 +993,7 @@ def handle_upstox_callback(code: str = Query(None), error: str = Query(None)):
         <html><body style="background:#0b0d10; color:#fff; font-family:sans-serif; text-align:center; padding-top:60px;">
           <h2 style="color:#e74c3c;">❌ Token Exchange Failed</h2>
           <p>{result.get('error')}</p>
-          <a href="/" style="color:#ff6b35;">Return to FoxTrader Workspace &rarr;</a>
+          <a href="/" style="color:#ff6b35;">Return to Dhan Muhurat Workspace &rarr;</a>
         </body></html>
         """)
 
@@ -1030,7 +1030,7 @@ def get_upstox_quote(symbol: str):
     if symbol in quotes:
         return {"symbol": symbol, "quote": quotes[symbol], "source": "UPSTOX_API_V2"}
     stock = data_mgr.stocks.get(symbol)
-    return {"symbol": symbol, "quote": stock, "source": "FOXTRADER_FEED"}
+    return {"symbol": symbol, "quote": stock, "source": "DHAN_MUHURAT_FEED"}
 
 @app.get("/api/broker/fyers/login_url")
 def get_fyers_login_url():
@@ -1300,7 +1300,7 @@ def serve_index():
     index_file = os.path.join(frontend_dir, "index.html")
     if os.path.exists(index_file):
         return FileResponse(index_file)
-    return {"message": "FoxTrader-Pro API Server running. Open frontend."}
+    return {"message": "Dhan Muhurat Platform API Server running. Open frontend."}
 
 if __name__ == "__main__":
     import os, uvicorn

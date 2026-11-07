@@ -1,4 +1,4 @@
-# FoxTrader-Pro Live Institutional Signals
+# Dhan Muhurat Live Institutional Signals
 
 > **Last Updated**: `2026-11-07 23:01:11 IST` | **Total Active Signals**: `100`
 
@@ -31,4 +31,4 @@
 | **LT** | 🟢 **BUY** | Triple EMA Alignment (EMA13 > EMA21 > EMA50) | ₹3493.18 | +0.38% | ₹7732.80 | ₹7588.28 | 2026-11-07 13:16:10 |
 
 
-*Generated automatically by FoxTrader-Pro Algorithmic Trading Platform*
+*Generated automatically by Dhan Muhurat Algorithmic Trading Platform*

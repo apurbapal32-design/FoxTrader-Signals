@@ -1,5 +1,5 @@
 """
-FoxTrader-Pro Live Price & Signal Database Manager with Automated GitHub Upload
+Dhan Muhurat Live Price & Signal Database Manager with Automated GitHub Upload
 Persists signals in SQLite and JSON, and automatically pushes updates to GitHub via REST API.
 """
 
@@ -94,7 +94,7 @@ class SignalDatabaseManager:
             float(sig.get("target1", 0.0)),
             float(sig.get("target2", 0.0)),
             json.dumps(sig.get("smc_details", {})),
-            sig.get("source", "FoxTrader Core Engine")
+            sig.get("source", "Dhan Muhurat Core Engine")
         ))
         sig_id = cur.lastrowid
         conn.commit()
@@ -145,7 +145,7 @@ class SignalDatabaseManager:
         headers = {
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.github+json",
-            "User-Agent": "FoxTrader-Pro",
+            "User-Agent": "Dhan-Muhurat-Pro",
             "X-GitHub-Api-Version": "2022-11-28"
         }
 
@@ -162,7 +162,7 @@ class SignalDatabaseManager:
                 create_url = "https://api.github.com/user/repos"
                 payload = json.dumps({
                     "name": repo,
-                    "description": "FoxTrader-Pro Algorithmic Signals & Real-Time Market Intelligence Database",
+                    "description": "Dhan Muhurat Algorithmic Signals & Real-Time Market Intelligence Database",
                     "private": False,
                     "auto_init": True
                 }).encode("utf-8")
@@ -192,7 +192,7 @@ class SignalDatabaseManager:
         headers = {
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.github+json",
-            "User-Agent": "FoxTrader-Pro",
+            "User-Agent": "Dhan-Muhurat-Pro",
             "X-GitHub-Api-Version": "2022-11-28"
         }
 
@@ -243,20 +243,20 @@ class SignalDatabaseManager:
             "total_signals": len(signals),
             "signals": signals
         }, indent=2)
-        res1 = self.upload_file_to_github("data/signals.json", signals_json, "FoxTrader Auto-Sync: Update signals database")
+        res1 = self.upload_file_to_github("data/signals.json", signals_json, "Dhan Muhurat Auto-Sync: Update signals database")
 
         # 2. Markdown Report
         now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S IST")
-        md_content = f"# FoxTrader-Pro Live Institutional Signals\n\n"
+        md_content = f"# Dhan Muhurat Pro Live Institutional Signals\n\n"
         md_content += f"> **Last Updated**: `{now_str}` | **Total Active Signals**: `{len(signals)}`\n\n"
         md_content += "| Symbol | Bias | Signal Type | Trigger Price | % Chg | Target 1 | Stop Loss | Timestamp |\n"
         md_content += "| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n"
         for s in signals[:25]:
             bias_emoji = "🟢 **BUY**" if s['bias'] == 'BUY' else "🔴 **SELL**"
             md_content += f"| **{s['symbol']}** | {bias_emoji} | {s['signal_type']} | ₹{s['price']:.2f} | {s['change_pct']:+.2f}% | ₹{s['target1']:.2f} | ₹{s['stop_loss']:.2f} | {s['timestamp']} |\n"
-        md_content += "\n\n*Generated automatically by FoxTrader-Pro Algorithmic Trading Platform*\n"
+        md_content += "\n\n*Generated automatically by Dhan Muhurat Algorithmic Trading Platform*\n"
 
-        res2 = self.upload_file_to_github("LATEST_SIGNALS.md", md_content, "FoxTrader Auto-Sync: Update Markdown Signal Board")
+        res2 = self.upload_file_to_github("LATEST_SIGNALS.md", md_content, "Dhan Muhurat Auto-Sync: Update Markdown Signal Board")
 
         return {
             "success": res1.get("success", False) or res2.get("success", False),

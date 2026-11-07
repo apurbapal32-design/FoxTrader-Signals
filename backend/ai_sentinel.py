@@ -1,5 +1,5 @@
 """
-FoxTrader-Pro Autonomous AI Sentinel & System Agent
+Dhan Muhurat Autonomous AI Sentinel & System Agent
 Monitors system health, maintains tick streams, audits database integrity,
 surveys market risk across 224 instruments, and answers natural language trading queries.
 """
@@ -18,7 +18,7 @@ except ImportError:
 
 class FoxTraderAISentinel:
     """
-    Autonomous Next-Gen AI Agent that maintains and monitors the FoxTrader system:
+    Autonomous Next-Gen AI Agent that maintains and monitors the Dhan Muhurat system:
     1. System Health & Self-Healing (tick velocity, memory, auto-recovery).
     2. Market Surveillance (Institutional breadth, Advance/Decline across 224 scrips).
     3. Automated Database Maintenance & GitHub Sync Scheduling.
@@ -177,7 +177,7 @@ class FoxTraderAISentinel:
             return {
                 "type": "SYSTEM_HEALTH",
                 "answer": (
-                    f"🤖 **FoxTrader AI Sentinel Telemetry Report**:\n"
+                    f"🤖 **Dhan Muhurat AI Sentinel Telemetry Report**:\n"
                     f"• **System Health**: `{metrics['health_score']}% Optimal`\n"
                     f"• **Monitored Universe**: `{metrics['universe_monitored']} Instruments (6 Indices + 218 F&O Equities)`\n"
                     f"• **Broker Gateway**: `{metrics['broker_gateway']}` (Auto Failover Active)\n"
@@ -259,7 +259,7 @@ class FoxTraderAISentinel:
         return {
             "type": "GENERAL",
             "answer": (
-                f"🤖 **FoxTrader AI Sentinel Autonomous Copilot**:\n"
+                f"🤖 **Dhan Muhurat AI Sentinel Autonomous Copilot**:\n"
                 f"I am actively monitoring system health, tick streams, 224 instruments, and database integrity.\n\n"
                 f"Try asking:\n"
                 f"• *'System health and telemetry'* (CPU, memory, stream ping)\n"

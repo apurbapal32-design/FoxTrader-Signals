@@ -47,7 +47,7 @@
       font-size: 12px;
     }
 
-    /* Top Classic FoxTrader Toolbar */
+    /* Top Classic Dhan Muhurat Toolbar */
     .fox-topbar {
       background-color: #111315;
       border-bottom: 1px solid var(--border-color);
@@ -231,7 +231,7 @@
       display: flex;
     }
 
-    /* VIEW 1: FoxTrader Multi-Window Desktop Layout */
+    /* VIEW 1: Dhan Muhurat Multi-Window Desktop Layout */
     .desktop-layout {
       width: 100%;
       height: 100%;
@@ -535,7 +535,7 @@
       font-family: 'JetBrains Mono', monospace;
     }
   
-    /* --- FoxTrader Modal System --- */
+    /* --- Dhan Muhurat Modal System --- */
     .modal-backdrop {
       position: fixed;
       top: 0;
@@ -1144,7 +1144,7 @@
 </head>
 <body>
 
-  <!-- Top Classic FoxTrader Toolbar -->
+  <!-- Top Classic Dhan Muhurat Toolbar -->
   <header class="fox-topbar">
     <div class="topbar-left">
       <div class="fox-logo-badge" style="display:flex; align-items:center; gap:10px; cursor:pointer;" onclick="switchToTab('desktop')" title="Dhan Muhurat — Invest • Grow • Prosper">
@@ -1257,7 +1257,7 @@
   <!-- Main Workspaces Container -->
   <main class="workspace-area">
 
-    <!-- 1. FoxTrader Workspace -->
+    <!-- 1. Dhan Muhurat Workspace -->
     <section class="view-container active" id="view-desktop">
       <div class="desktop-layout">
         
@@ -2647,7 +2647,7 @@
   <!-- Bottom Classic Status Bar -->
   <footer class="fox-footer">
     <div style="display:flex; align-items:center; gap:14px; overflow:hidden; white-space:nowrap;">
-      <span>⚡ FOXTRADER RADAR:</span>
+      <span>⚡ DHAN MUHURAT RADAR:</span>
       <span class="text-green">NIFTY (24,150.00 +0.45%)</span>
       <span class="text-green">BANKNIFTY (51,620.00 +0.82%)</span>
       <span class="text-green">RELIANCE (₹2,740.00 +1.2%)</span>
@@ -3193,7 +3193,7 @@
           document.getElementById('brokerStatusText').innerText = `Live: ${data.broker}`;
           document.getElementById('footerBrokerName').innerText = data.broker;
         } else {
-          diag.innerHTML = `<span class="text-orange">⚠️ ${data.broker}: ${data.status}</span><br>FoxTrader Live Tick Streamer active across 224 instruments.`;
+          diag.innerHTML = `<span class="text-orange">⚠️ ${data.broker}: ${data.status}</span><br>Dhan Muhurat Live Tick Streamer active across 224 instruments.`;
           document.getElementById('brokerStatusText').innerText = `Fallback: Live Streamer`;
         }
       } catch (e) {
@@ -3547,7 +3547,7 @@
       const timestamp = new Date().toLocaleTimeString();
 
       const text = [
-        `⚡ FOXTRADER PRO INSTITUTIONAL SIGNAL ALERT ⚡`,
+        `⚡ DHAN MUHURAT PRO INSTITUTIONAL SIGNAL ALERT ⚡`,
         `━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
         `📌 Scrip: ${sym} (${dirText})`,
         `🕒 Pickup Time: ${timestamp} IST`,
@@ -5634,7 +5634,7 @@
       </div>
       <div class="modal-body">
         <p style="font-size:11px; color:var(--text-muted); margin-bottom:12px;">
-          FoxTrader automatically pushes signals and price snapshots to your GitHub repository every 5 minutes. You can configure repository credentials here.
+          Dhan Muhurat automatically pushes signals and price snapshots to your GitHub repository every 5 minutes. You can configure repository credentials here.
         </p>
         <div class="form-group">
           <label>GitHub Personal Access Token (PAT):</label>
