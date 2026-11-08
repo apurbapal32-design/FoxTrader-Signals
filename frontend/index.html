@@ -544,7 +544,7 @@
       height: 100vh;
       background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(5px);
-      z-index: 9999;
+      z-index: 100005 !important;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -4564,9 +4564,12 @@
 
     // Scanner
     async function runScanner() {
-      const preset = document.getElementById('scannerPresetSelect').value;
-      const query = document.getElementById('customQueryInput').value;
-      const tf = document.getElementById('scannerTfSelect').value;
+      const presetEl = document.getElementById('scannerPresetSelect');
+      const queryEl = document.getElementById('customQueryInput');
+      const tfEl = document.getElementById('scannerTfSelect');
+      const preset = presetEl ? presetEl.value : 'smc_bullish_bos';
+      const query = queryEl ? queryEl.value : '';
+      const tf = tfEl ? tfEl.value : '5m';
       
       try {
         const res = await fetch('/api/scanner/run', {
@@ -4624,6 +4627,7 @@
         const res = await fetch('/api/signals/presets');
         const list = await res.json();
         const sel = document.getElementById('scannerPresetSelect');
+        if (!sel) return;
         list.forEach(p => {
           const opt = document.createElement('option');
           opt.value = p.id;
