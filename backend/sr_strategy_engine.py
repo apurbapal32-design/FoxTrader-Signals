@@ -281,10 +281,14 @@ class SRStrategyEngine:
             sym = idx["symbol"]
             curr_price = idx["base_price"]
             chg = 0.45
-            
-            # If live data manager is present, grab latest price & change
+
+            # If live data manager is present, grab latest price & change (including SENSEX in extra_indices)
             if data_mgr and hasattr(data_mgr, "stocks") and sym in data_mgr.stocks:
                 st = data_mgr.stocks[sym]
+                curr_price = float(st.get("price", curr_price))
+                chg = float(st.get("pcn", chg))
+            elif data_mgr and hasattr(data_mgr, "extra_indices") and sym in data_mgr.extra_indices:
+                st = data_mgr.extra_indices[sym]
                 curr_price = float(st.get("price", curr_price))
                 chg = float(st.get("pcn", chg))
 

@@ -23,6 +23,10 @@ class DataFeedManager:
         self.gateway = BrokerGateway()
         self.load_universe()
         self.historical_cache: Dict[str, pd.DataFrame] = {}
+        self.extra_indices: Dict[str, Dict[str, Any]] = {}
+        self._tick_cursor: int = 0
+        self.last_live_sync_count: int = 0
+        self.last_live_sync_time: Optional[str] = None
         self.initialize_market_state()
 
     def load_universe(self):
@@ -94,6 +98,41 @@ class DataFeedManager:
                 "lastUpdate": datetime.now().strftime("%H:%M:%S")
             })
 
+        # If a live broker token (e.g. Upstox) is configured, immediately sync real market quotes
+        if self.gateway.has_live_upstox_token() or self.gateway.fyers_client:
+            self.sync_all_live_quotes()
+
+    def sync_all_live_quotes(self) -> int:
+        """Synchronizes real-time quotes from active broker across all 224 instruments + SENSEX."""
+        all_syms = list(self.stocks.keys()) + ["SENSEX"]
+        quotes = self.gateway.fetch_live_quotes(all_syms)
+        if not quotes:
+            return 0
+
+        now_str = datetime.now().strftime("%H:%M:%S")
+        updated_cnt = 0
+        for sym, bq in quotes.items():
+            if sym in self.stocks:
+                stock = self.stocks[sym]
+                bq_copy = dict(bq)
+                bq_copy["tickDir"] = 1 if bq_copy.get("change", 0) >= 0 else -1
+                bq_copy["lastUpdate"] = now_str
+                if bq_copy.get("prevClose", 0) > 0:
+                    bq_copy["basePrice"] = bq_copy["prevClose"]
+                stock.update(bq_copy)
+                updated_cnt += 1
+            else:
+                bq_copy = dict(bq)
+                bq_copy["symbol"] = sym
+                bq_copy["tickDir"] = 1 if bq_copy.get("change", 0) >= 0 else -1
+                bq_copy["lastUpdate"] = now_str
+                self.extra_indices[sym] = bq_copy
+                updated_cnt += 1
+
+        self.last_live_sync_count = updated_cnt
+        self.last_live_sync_time = now_str
+        return updated_cnt
+
     def get_live_snapshot(self, filter_type: str = "ALL") -> List[Dict[str, Any]]:
         """Returns the complete market watch array for all 224 instruments or filtered by sector."""
         all_items = list(self.stocks.values())
@@ -108,30 +147,54 @@ class DataFeedManager:
     def update_ticks(self) -> List[Dict[str, Any]]:
         """
         Updates live prices:
-        1. Checks active broker API (e.g. Fyers) for live quotes.
-        2. Streams high-speed micro tick oscillations across the 224 universe.
+        1. Polls active broker API (Upstox v2 / Fyers v3) across priority indices + rotating slices of all 224 stocks.
+        2. Only falls back to micro-tick streamer simulation when no live broker feed is active.
         """
         updated = []
-        # Sample active indices + random subset of 25 stocks each second
-        active_syms = ["NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY", "RELIANCE", "HDFCBANK", "BAJAJFINSV", "CHAMBLFERT"]
-        pool = [s for s in self.stocks.keys() if s not in active_syms]
-        chosen = active_syms + random.sample(pool, k=min(22, len(pool)))
+        priority_syms = ["NIFTY", "BANKNIFTY", "FINNIFTY", "MIDCPNIFTY", "NIFTYNXT50", "SENSEX", "RELIANCE", "HDFCBANK", "ICICIBANK", "TCS"]
+        pool = [s for s in self.stocks.keys() if s not in priority_syms]
+        batch_size = 30
+        if pool:
+            end_idx = self._tick_cursor + batch_size
+            slice_syms = pool[self._tick_cursor:end_idx]
+            if len(slice_syms) < batch_size and len(pool) > batch_size:
+                slice_syms += pool[:batch_size - len(slice_syms)]
+            self._tick_cursor = end_idx % len(pool)
+        else:
+            slice_syms = []
+
+        chosen = priority_syms + slice_syms
 
         # Try broker live quotes first
         broker_quotes = self.gateway.fetch_live_quotes(chosen)
+        broker_live = self.gateway.has_live_upstox_token() or bool(self.gateway.fyers_client)
+        now_str = datetime.now().strftime("%H:%M:%S")
+
+        if "SENSEX" in broker_quotes:
+            sq = dict(broker_quotes["SENSEX"])
+            sq["symbol"] = "SENSEX"
+            sq["lastUpdate"] = now_str
+            self.extra_indices["SENSEX"] = sq
 
         for sym in chosen:
+            if sym not in self.stocks:
+                continue
             stock = self.stocks[sym]
             if sym in broker_quotes:
-                bq = broker_quotes[sym]
+                bq = dict(broker_quotes[sym])
                 new_price = bq["price"]
                 pcn = bq["changePct"]
                 tick_dir = 1 if bq["change"] >= 0 else -1
                 stock.update(bq)
                 stock["tickDir"] = tick_dir
-                stock["lastUpdate"] = datetime.now().strftime("%H:%M:%S")
+                stock["lastUpdate"] = now_str
+            elif broker_live:
+                # Preserve existing real broker quote without injecting simulated noise
+                new_price = stock["price"]
+                pcn = stock["pcn"]
+                tick_dir = 0
             else:
-                # Live micro tick oscillation
+                # Live micro tick oscillation fallback when broker token isn't configured
                 volatility = 0.0006 if stock.get("is_index") else 0.0016
                 delta = round(stock["price"] * random.uniform(-volatility, volatility), 2)
                 new_price = max(1.0, round(stock["price"] + delta, 2))
@@ -147,7 +210,7 @@ class DataFeedManager:
                 stock["low"] = min(stock["low"], new_price)
                 stock["volume"] += random.randint(15, 600)
                 stock["tickDir"] = tick_dir
-                stock["lastUpdate"] = datetime.now().strftime("%H:%M:%S")
+                stock["lastUpdate"] = now_str
 
             updated.append({
                 "symbol": sym,
@@ -177,16 +240,16 @@ class DataFeedManager:
                 rows = []
                 for c in reversed(up_candles):  # Upstox returns latest first
                     try:
-                        ts = pd.to_datetime(c[0])
+                        ts = pd.to_datetime(c[0]).strftime("%Y-%m-%d %H:%M")
                     except Exception:
-                        ts = datetime.now()
+                        ts = datetime.now().strftime("%Y-%m-%d %H:%M")
                     rows.append({
                         "timestamp": ts,
                         "open": float(c[1]),
                         "high": float(c[2]),
                         "low": float(c[3]),
                         "close": float(c[4]),
-                        "volume": int(c[5])
+                        "volume": int(c[5] or 0)
                     })
                 df = pd.DataFrame(rows)
                 self.historical_cache[cache_key] = df

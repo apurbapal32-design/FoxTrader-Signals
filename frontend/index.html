@@ -4191,6 +4191,14 @@
           if (msg.type === 'INITIAL_SNAPSHOT') {
             marketData = msg.market || [];
             signalHistory = msg.signals || [];
+            marketData.forEach(m => {
+              const idxEl = document.getElementById(`idx_${m.symbol}`);
+              if (idxEl) {
+                const isBull = (m.pcn || 0) >= 0;
+                idxEl.innerText = `${(m.price || 0).toLocaleString(undefined, {minimumFractionDigits:2})} (${isBull ? '+' : ''}${(m.pcn || 0).toFixed(2)}%)`;
+                idxEl.className = isBull ? 'text-green' : 'text-red';
+              }
+            });
             applyMarketFilters();
             updateTickWatch();
             updateGroupScan();
@@ -4638,6 +4646,30 @@
       });
     }
 
+    async function refreshLiveMarketUI() {
+      try {
+        const res = await fetch('/api/market/watch');
+        if (res.ok) {
+          marketData = await res.json();
+          if (typeof applyMarketFilters === 'function') applyMarketFilters();
+          if (typeof updateTickWatch === 'function') updateTickWatch();
+          if (typeof updateGroupScan === 'function') updateGroupScan();
+          if (typeof renderUniverseDirectory === 'function') renderUniverseDirectory();
+          marketData.forEach(m => {
+            const idxEl = document.getElementById(`idx_${m.symbol}`);
+            if (idxEl) {
+              const isBull = (m.pcn || 0) >= 0;
+              idxEl.innerText = `${(m.price || 0).toLocaleString(undefined, {minimumFractionDigits:2})} (${isBull ? '+' : ''}${(m.pcn || 0).toFixed(2)}%)`;
+              idxEl.className = isBull ? 'text-green' : 'text-red';
+            }
+          });
+        }
+        if (typeof fetchSREngineData === 'function') fetchSREngineData();
+      } catch (e) {
+        console.warn('Market refresh skipped:', e);
+      }
+    }
+
     // Broker API Management
     async function checkBrokerLiveStatus() {
       const diag = document.getElementById('brokerDiagResult');
@@ -4647,7 +4679,8 @@
         const data = await res.json();
         if (data.connected) {
           let userDetail = data.user_name ? `<br>User: <b>${data.user_name}</b> (${data.user_id || ''})` : '';
-          diag.innerHTML = `<span class="text-green">✅ ${data.broker} Connected!</span>${userDetail}<br>Status: ${data.status}`;
+          let syncDetail = data.synced_instruments ? `<br>Synced Quotes: <b>${data.synced_instruments}</b> live instruments` : '';
+          diag.innerHTML = `<span class="text-green">✅ ${data.broker} Connected!</span>${userDetail}${syncDetail}<br>Status: ${data.status}`;
           document.getElementById('brokerStatusText').innerText = `Live: ${data.broker}`;
           document.getElementById('footerBrokerName').innerText = data.broker;
         } else {
@@ -4682,8 +4715,9 @@
           body: JSON.stringify(payload)
         });
         const data = await res.json();
-        showToast('✅ Broker configuration saved!');
+        showToast(`✅ Broker saved! Live quotes synced: ${data.synced_count || 0}`);
         checkBrokerLiveStatus();
+        refreshLiveMarketUI();
       } catch (e) {
         alert('Failed saving config: ' + e);
       }
@@ -4691,6 +4725,22 @@
 
     async function openUpstoxLogin() {
       try {
+        const apiKey = document.getElementById('upstoxApiKey')?.value.trim() || '';
+        const apiSecret = document.getElementById('upstoxApiSecret')?.value.trim() || '';
+        if (apiKey) {
+          await fetch('/api/broker/config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              active_broker: 'upstox',
+              upstox: {
+                api_key: apiKey,
+                api_secret: apiSecret,
+                redirect_uri: document.getElementById('upstoxRedirectUri')?.value.trim() || 'http://127.0.0.1:8088/api/broker/upstox/callback'
+              }
+            })
+          });
+        }
         const res = await fetch('/api/broker/upstox/login_url');
         const data = await res.json();
         if (data.url) {
@@ -4717,10 +4767,11 @@
         });
         const data = await res.json();
         if (data.success) {
-          showToast('✅ Upstox API v2 Token Activated!');
+          showToast(`✅ Upstox Live Feed Activated (${data.synced_count || 224} scrips synced)!`);
           document.getElementById('brokerSelect').value = 'upstox';
           toggleBrokerFields('upstox');
           checkBrokerLiveStatus();
+          refreshLiveMarketUI();
         } else {
           alert('Failed activating Upstox token: ' + JSON.stringify(data));
         }
@@ -4757,6 +4808,7 @@
         }
         if (cfg.upstox) {
           if (cfg.upstox.api_key) document.getElementById('upstoxApiKey').value = cfg.upstox.api_key;
+          if (cfg.upstox.api_secret) document.getElementById('upstoxApiSecret').value = cfg.upstox.api_secret;
           if (cfg.upstox.access_token) document.getElementById('upstoxAccessToken').value = cfg.upstox.access_token;
         }
         if (cfg.fyers) {

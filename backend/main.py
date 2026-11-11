@@ -17,6 +17,7 @@ if REPO_ROOT not in sys.path:
 from apex_quant_strategy import ApexQuantStrategyEngine
 
 import os
+import copy
 import asyncio
 import json
 import uuid
@@ -108,25 +109,60 @@ positions: List[Dict[str, Any]] = [
     }
 ]
 
+def _run_background_symbol_scan(target_sym: str):
+    """Runs CPU/IO-bound candle & SMC scan in a worker thread."""
+    df = data_mgr.get_historical_bars(target_sym, "5m", 80)
+    df = TechnicalIndicators.compute_all_studies(df)
+    smc_breaks, obs, sweeps = SMCEngine.detect_market_structure(df)
+    fvgs = SMCEngine.detect_fvg(df)
+    smc_dict = {
+        "structureBreaks": smc_breaks,
+        "orderBlocks": obs,
+        "sweeps": sweeps,
+        "fvgs": fvgs,
+        "premiumDiscount": SMCEngine.compute_premium_discount(df)
+    }
+
+    for preset in READY_MADE_SIGNALS[:12]:
+        if StrategyScanner.evaluate_preset(preset["id"], df, smc_dict):
+            setup = SMCEngine.calculate_trade_setup(df, smc_dict)
+            last_bar = df.iloc[-1]
+            stock_item = data_mgr.stocks.get(target_sym, {"name": target_sym, "sector": "F&O", "pcn": 0.0})
+
+            return signal_tracker.register_signal(
+                sym=target_sym,
+                name=stock_item.get("name", target_sym),
+                sector=stock_item.get("sector", "F&O"),
+                preset_id=preset["id"],
+                bias="BUY" if "BULLISH" in setup.get("bias", "BULLISH").upper() else "SELL",
+                entry_price=setup.get("entry", float(last_bar['close'])),
+                t1=setup.get("target1", float(last_bar['close']) * 1.015),
+                t2=setup.get("target2", float(last_bar['close']) * 1.030),
+                t3=setup.get("target3", float(last_bar['close']) * 1.045),
+                sl=setup.get("stopLoss", float(last_bar['close']) * 0.985),
+                pcn=stock_item.get("pcn", 0.0)
+            )
+    return None
+
 # Background periodic scanner & tick broadcaster
 async def background_tick_and_scan_loop():
     loop_counter = 0
     while True:
         try:
-            await asyncio.sleep(1.0)
+            await asyncio.sleep(2.0 if data_mgr.gateway.has_live_upstox_token() else 1.0)
             loop_counter += 1
 
-            # 1. Update ticks
-            ticks = data_mgr.update_ticks()
+            # 1. Update ticks off the event loop so Upstox network calls never block HTTP requests
+            ticks = await asyncio.to_thread(data_mgr.update_ticks)
             if ticks:
                 ai_sentinel.ticks_processed += len(ticks)
-                
+
                 # Update live signal lifecycle tracker (checks Target 1/2/3 and SL hits)
                 events = signal_tracker.update_ticks(ticks)
                 if events:
                     for ev in events:
                         msg_ev = json.dumps({"type": "TARGET_EVENT", "data": ev})
-                        for client in connected_clients:
+                        for client in list(connected_clients):
                             try:
                                 await client.send_text(msg_ev)
                             except Exception:
@@ -136,57 +172,24 @@ async def background_tick_and_scan_loop():
             if signal_tracker.auto_scan_enabled and (loop_counter % signal_tracker.auto_scan_interval == 0):
                 tracked_syms = ["BAJAJFINSV", "RELIANCE", "NIFTY", "BANKNIFTY", "CHAMBLFERT", "TATASTEEL", "INFY", "HDFCBANK", "ICICIBANK", "SBIN", "BHARTIARTL", "LT", "TATAMOTORS", "ITC", "WIPRO"]
                 target_sym = tracked_syms[loop_counter % len(tracked_syms)]
-                df = data_mgr.get_historical_bars(target_sym, "5m", 80)
-                df = TechnicalIndicators.compute_all_studies(df)
-                smc_breaks, obs, sweeps = SMCEngine.detect_market_structure(df)
-                fvgs = SMCEngine.detect_fvg(df)
-                smc_dict = {
-                    "structureBreaks": smc_breaks,
-                    "orderBlocks": obs,
-                    "sweeps": sweeps,
-                    "fvgs": fvgs,
-                    "premiumDiscount": SMCEngine.compute_premium_discount(df)
-                }
-                
-                # Check preset
-                for preset in READY_MADE_SIGNALS[:12]:
-                    if StrategyScanner.evaluate_preset(preset["id"], df, smc_dict):
-                        setup = SMCEngine.calculate_trade_setup(df, smc_dict)
-                        last_bar = df.iloc[-1]
-                        stock_item = data_mgr.stocks.get(target_sym, {"name": target_sym, "sector": "F&O", "pcn": 0.0})
-                        
-                        registered = signal_tracker.register_signal(
-                            sym=target_sym,
-                            name=stock_item.get("name", target_sym),
-                            sector=stock_item.get("sector", "F&O"),
-                            preset_id=preset["id"],
-                            bias="BUY" if "BULLISH" in setup.get("bias", "BULLISH").upper() else "SELL",
-                            entry_price=setup.get("entry", float(last_bar['close'])),
-                            t1=setup.get("target1", float(last_bar['close']) * 1.015),
-                            t2=setup.get("target2", float(last_bar['close']) * 1.030),
-                            t3=setup.get("target3", float(last_bar['close']) * 1.045),
-                            sl=setup.get("stopLoss", float(last_bar['close']) * 0.985),
-                            pcn=stock_item.get("pcn", 0.0)
-                        )
-                        
-                        # Broadcast newly picked setup
-                        msg_new = json.dumps({"type": "NEW_PICKED_SIGNAL", "data": registered})
-                        for client in connected_clients:
-                            try:
-                                await client.send_text(msg_new)
-                            except Exception:
-                                pass
-                        break
+                registered = await asyncio.to_thread(_run_background_symbol_scan, target_sym)
+                if registered:
+                    msg_new = json.dumps({"type": "NEW_PICKED_SIGNAL", "data": registered})
+                    for client in list(connected_clients):
+                        try:
+                            await client.send_text(msg_new)
+                        except Exception:
+                            pass
 
             # 3. Broadcast ticks
             msg = json.dumps({"type": "TICKS", "data": ticks})
-            for client in connected_clients:
+            for client in list(connected_clients):
                 try:
                     await client.send_text(msg)
                 except Exception:
                     pass
 
-        except Exception as e:
+        except Exception:
             await asyncio.sleep(2.0)
 
 @app.on_event("startup")
@@ -968,47 +971,64 @@ def get_market_watch(filter: str = Query("ALL")):
     """Returns the market watch array for all 224 instruments or filtered by category/sector."""
     return data_mgr.get_live_snapshot(filter)
 
+def _merge_non_empty_secrets(target: Dict[str, Any], updates: Dict[str, Any]):
+    """Updates broker config sub-dict without wiping stored keys/secrets with empty or masked values."""
+    secret_fields = {"access_token", "api_secret", "secret_key", "jwt_token"}
+    for k, v in updates.items():
+        if isinstance(v, str):
+            val = v.strip()
+            if k in secret_fields and (not val or "..." in val or val == "***"):
+                continue
+            if not val and target.get(k):
+                continue
+            target[k] = val
+        elif v is not None:
+            target[k] = v
+
 @app.get("/api/broker/status")
 def get_broker_status():
     """Returns live connection status of active broker API."""
-    return data_mgr.gateway.test_broker_connection()
+    status = data_mgr.gateway.test_broker_connection()
+    status["synced_instruments"] = data_mgr.last_live_sync_count
+    status["last_live_sync"] = data_mgr.last_live_sync_time
+    return status
 
 @app.get("/api/broker/config")
 def get_broker_config():
-    """Returns current broker configuration."""
-    cfg = data_mgr.gateway.config.copy()
-    if cfg.get("upstox", {}).get("access_token"):
-        t = cfg["upstox"]["access_token"]
-        cfg["upstox"]["access_token_masked"] = t[:8] + "..." + t[-6:] if len(t) > 14 else "***"
-    if cfg.get("fyers", {}).get("access_token"):
-        t = cfg["fyers"]["access_token"]
-        cfg["fyers"]["access_token_masked"] = t[:10] + "..." + t[-6:] if len(t) > 16 else "***"
+    """Returns current broker configuration with tokens/secrets safely masked."""
+    cfg = copy.deepcopy(data_mgr.gateway.config)
+    for bkey, tfield in [("upstox", "access_token"), ("fyers", "access_token"), ("zerodha", "access_token"), ("dhan", "access_token"), ("angel", "jwt_token")]:
+        t = cfg.get(bkey, {}).get(tfield, "")
+        if t:
+            masked = t[:8] + "..." + t[-6:] if len(t) > 14 else "***"
+            cfg[bkey][f"{tfield}_masked"] = masked
+            cfg[bkey][tfield] = masked
+    for bkey, sfield in [("upstox", "api_secret"), ("fyers", "secret_key")]:
+        s = cfg.get(bkey, {}).get(sfield, "")
+        if s:
+            cfg[bkey][sfield] = s[:3] + "..." + s[-2:] if len(s) > 6 else "***"
     return cfg
 
 @app.post("/api/broker/config")
 def update_broker_config(payload: Dict[str, Any] = Body(...)):
-    """Updates broker configuration and initializes active client."""
-    cfg = data_mgr.gateway.config.copy()
+    """Updates broker configuration, initializes active client, and syncs live quotes."""
+    cfg = copy.deepcopy(data_mgr.gateway.config)
     if "active_broker" in payload:
         cfg["active_broker"] = payload["active_broker"]
-    if "upstox" in payload:
-        if "upstox" not in cfg:
-            cfg["upstox"] = {}
-        cfg["upstox"].update(payload["upstox"])
-    if "fyers" in payload:
-        cfg["fyers"].update(payload["fyers"])
-    if "zerodha" in payload:
-        cfg["zerodha"].update(payload["zerodha"])
-    if "angel" in payload:
-        cfg["angel"].update(payload["angel"])
-    if "dhan" in payload:
-        cfg["dhan"].update(payload["dhan"])
-        
+    for bkey in ["upstox", "fyers", "zerodha", "angel", "dhan"]:
+        if bkey in payload and isinstance(payload[bkey], dict):
+            cfg.setdefault(bkey, {})
+            _merge_non_empty_secrets(cfg[bkey], payload[bkey])
+
     data_mgr.gateway.save_config(cfg)
     data_mgr.gateway.init_fyers()
     data_mgr.gateway.init_upstox()
-    ai_sentinel.add_log("BROKER", f"Broker gateway configuration updated: {cfg.get('active_broker')}")
-    return {"status": "ok", "broker_status": data_mgr.gateway.test_broker_connection()}
+    data_mgr.historical_cache.clear()
+    synced = data_mgr.sync_all_live_quotes()
+    ai_sentinel.add_log("BROKER", f"Broker gateway configuration updated: {cfg.get('active_broker')} (Synced {synced} quotes)")
+    status = data_mgr.gateway.test_broker_connection()
+    status["synced_instruments"] = synced
+    return {"status": "ok", "synced_count": synced, "broker_status": status}
 
 @app.get("/api/broker/upstox/login_url")
 def get_upstox_login_url():
@@ -1036,15 +1056,17 @@ def handle_upstox_callback(code: str = Query(None), error: str = Query(None)):
 
     result = data_mgr.gateway.exchange_upstox_code(code)
     if result.get("success"):
-        ai_sentinel.add_log("UPSTOX_AUTH", f"Upstox user authenticated successfully: {result.get('user_name', '')}")
-        return HTMLResponse("""
+        data_mgr.historical_cache.clear()
+        synced = data_mgr.sync_all_live_quotes()
+        ai_sentinel.add_log("UPSTOX_AUTH", f"Upstox user authenticated successfully: {result.get('user_name', '')} ({synced} scrips live)")
+        return HTMLResponse(f"""
         <html>
           <head><title>Upstox Connected</title></head>
           <body style="background:#0b0d10; color:#fff; font-family:sans-serif; text-align:center; padding-top:60px;">
             <h2 style="color:#2ecc71;">✅ Upstox API v2 Connected Successfully!</h2>
-            <p>Access Token generated and saved. Live market data feed activated across 224 instruments.</p>
+            <p>Access Token generated and saved. Live market data synced across {synced} instruments.</p>
             <script>
-              setTimeout(() => { window.location.href = '/'; }, 2000);
+              setTimeout(() => {{ window.location.href = '/'; }}, 2000);
             </script>
             <a href="/" style="color:#ff6b35; text-decoration:none; font-weight:bold;">Return to Dhan Muhurat Workspace &rarr;</a>
           </body>
@@ -1061,38 +1083,59 @@ def handle_upstox_callback(code: str = Query(None), error: str = Query(None)):
 
 @app.post("/api/broker/upstox/token")
 def set_upstox_token(payload: Dict[str, Any] = Body(...)):
-    """Directly sets Upstox access token for live price streaming."""
+    """Directly sets Upstox API key, secret & access token and syncs live market quotes."""
     token = payload.get("access_token", "").strip()
     api_key = payload.get("api_key", "").strip()
     api_secret = payload.get("api_secret", "").strip()
+    redirect_uri = payload.get("redirect_uri", "").strip()
 
-    cfg = data_mgr.gateway.config.copy()
+    cfg = copy.deepcopy(data_mgr.gateway.config)
     if "upstox" not in cfg:
         cfg["upstox"] = {}
-    if token:
+    if token and "..." not in token:
         cfg["upstox"]["access_token"] = token
     if api_key:
         cfg["upstox"]["api_key"] = api_key
-    if api_secret:
+    if api_secret and "..." not in api_secret:
         cfg["upstox"]["api_secret"] = api_secret
+    if redirect_uri:
+        cfg["upstox"]["redirect_uri"] = redirect_uri
     cfg["active_broker"] = "upstox"
 
     data_mgr.gateway.save_config(cfg)
     data_mgr.gateway.init_upstox()
-    ai_sentinel.add_log("UPSTOX", "Upstox API v2 token configured and activated.")
+    data_mgr.historical_cache.clear()
+    synced = data_mgr.sync_all_live_quotes()
+    ai_sentinel.add_log("UPSTOX", f"Upstox API v2 token configured and synced {synced} live quotes.")
+    status = data_mgr.gateway.test_broker_connection()
+    status["synced_instruments"] = synced
     return {
         "success": True,
-        "broker_status": data_mgr.gateway.test_broker_connection()
+        "synced_count": synced,
+        "broker_status": status
+    }
+
+@app.post("/api/broker/upstox/sync")
+def sync_upstox_quotes_now():
+    """Manually refreshes all 224 F&O + Indices live quotes from Upstox API v2."""
+    if not data_mgr.gateway.has_live_upstox_token():
+        raise HTTPException(status_code=400, detail="Valid Upstox access token is required")
+    synced = data_mgr.sync_all_live_quotes()
+    return {
+        "success": synced > 0,
+        "synced_count": synced,
+        "last_live_sync": data_mgr.last_live_sync_time
     }
 
 @app.get("/api/broker/upstox/quotes/{symbol}")
 def get_upstox_quote(symbol: str):
-    """Fetches live Upstox quote for any instrument in the 224 F&O universe."""
-    quotes = data_mgr.gateway.fetch_live_quotes([symbol])
-    if symbol in quotes:
-        return {"symbol": symbol, "quote": quotes[symbol], "source": "UPSTOX_API_V2"}
-    stock = data_mgr.stocks.get(symbol)
-    return {"symbol": symbol, "quote": stock, "source": "DHAN_MUHURAT_FEED"}
+    """Fetches live Upstox quote for any instrument in the 224 F&O universe or SENSEX."""
+    sym = symbol.upper()
+    quotes = data_mgr.gateway.fetch_live_quotes([sym])
+    if sym in quotes:
+        return {"symbol": sym, "quote": quotes[sym], "source": "UPSTOX_API_V2"}
+    stock = data_mgr.stocks.get(sym) or data_mgr.extra_indices.get(sym)
+    return {"symbol": sym, "quote": stock, "source": "DHAN_MUHURAT_FEED"}
 
 @app.get("/api/broker/fyers/login_url")
 def get_fyers_login_url():
