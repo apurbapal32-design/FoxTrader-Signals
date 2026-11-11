@@ -95,7 +95,8 @@ class DataFeedManager:
                 "prevClose": base,
                 "volume": vol,
                 "tickDir": 1 if pcn >= 0 else -1,
-                "lastUpdate": datetime.now().strftime("%H:%M:%S")
+                "lastUpdate": datetime.now().strftime("%H:%M:%S"),
+                "listed_at": datetime.now().strftime("%I:%M:%S %p IST")
             })
 
         # If a live broker token (e.g. Upstox) is configured, immediately sync real market quotes
@@ -110,6 +111,7 @@ class DataFeedManager:
             return 0
 
         now_str = datetime.now().strftime("%H:%M:%S")
+        listed_ist = datetime.now().strftime("%I:%M:%S %p IST")
         updated_cnt = 0
         for sym, bq in quotes.items():
             if sym in self.stocks:
@@ -117,6 +119,7 @@ class DataFeedManager:
                 bq_copy = dict(bq)
                 bq_copy["tickDir"] = 1 if bq_copy.get("change", 0) >= 0 else -1
                 bq_copy["lastUpdate"] = now_str
+                bq_copy["listed_at"] = listed_ist
                 if bq_copy.get("prevClose", 0) > 0:
                     bq_copy["basePrice"] = bq_copy["prevClose"]
                 stock.update(bq_copy)
@@ -126,6 +129,7 @@ class DataFeedManager:
                 bq_copy["symbol"] = sym
                 bq_copy["tickDir"] = 1 if bq_copy.get("change", 0) >= 0 else -1
                 bq_copy["lastUpdate"] = now_str
+                bq_copy["listed_at"] = listed_ist
                 self.extra_indices[sym] = bq_copy
                 updated_cnt += 1
 
@@ -169,11 +173,13 @@ class DataFeedManager:
         broker_quotes = self.gateway.fetch_live_quotes(chosen)
         broker_live = self.gateway.has_live_upstox_token() or bool(self.gateway.fyers_client)
         now_str = datetime.now().strftime("%H:%M:%S")
+        listed_ist = datetime.now().strftime("%I:%M:%S %p IST")
 
         if "SENSEX" in broker_quotes:
             sq = dict(broker_quotes["SENSEX"])
             sq["symbol"] = "SENSEX"
             sq["lastUpdate"] = now_str
+            sq["listed_at"] = listed_ist
             self.extra_indices["SENSEX"] = sq
 
         for sym in chosen:
@@ -188,11 +194,14 @@ class DataFeedManager:
                 stock.update(bq)
                 stock["tickDir"] = tick_dir
                 stock["lastUpdate"] = now_str
+                stock["listed_at"] = listed_ist
             elif broker_live:
                 # Preserve existing real broker quote without injecting simulated noise
                 new_price = stock["price"]
                 pcn = stock["pcn"]
                 tick_dir = 0
+                if "listed_at" not in stock:
+                    stock["listed_at"] = listed_ist
             else:
                 # Live micro tick oscillation fallback when broker token isn't configured
                 volatility = 0.0006 if stock.get("is_index") else 0.0016
@@ -211,6 +220,7 @@ class DataFeedManager:
                 stock["volume"] += random.randint(15, 600)
                 stock["tickDir"] = tick_dir
                 stock["lastUpdate"] = now_str
+                stock["listed_at"] = listed_ist
 
             updated.append({
                 "symbol": sym,
@@ -222,7 +232,8 @@ class DataFeedManager:
                 "low": stock["low"],
                 "isIndex": stock.get("is_index", False),
                 "sector": stock.get("sector", "F&O"),
-                "time": stock["lastUpdate"]
+                "time": stock["lastUpdate"],
+                "listed_at": stock.get("listed_at", listed_ist)
             })
 
         return updated

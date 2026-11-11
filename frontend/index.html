@@ -2789,6 +2789,7 @@
               <thead>
                 <tr>
                   <th>ScripName</th>
+                  <th>Listed At</th>
                   <th>LTP</th>
                   <th>Pcn%</th>
                   <th>Sector</th>
@@ -2815,6 +2816,7 @@
               <thead>
                 <tr>
                   <th>ScripName</th>
+                  <th>Listed At</th>
                   <th>Dir</th>
                   <th>Pcn</th>
                   <th>LastRate</th>
@@ -3354,13 +3356,14 @@
           </div>
 
           <div class="fox-panel">
-            <div class="panel-header">
+            <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
               <span>🚀 Live Scanned Breakouts &amp; Screen Matches (<span id="resBreakoutMatchesCount">0</span> Matched from <span id="resBreakoutUniverseCount">224</span> F&amp;O Scrips &bull; NSE+BSE 20D Highs: 213/5,041)</span>
+              <input type="text" class="panel-search-input" id="resBreakoutSearchInput" placeholder="🔍 Filter symbol/tag..." oninput="filterResearchBreakouts(this.value)" style="max-width:220px; padding:3px 8px; font-size:11px;">
             </div>
             <div class="panel-body" style="padding:0; overflow-x:auto;">
               <table class="fox-table" style="width:100%;">
                 <thead>
-                  <tr><th>Symbol</th><th>Sector</th><th>Live LTP</th><th>Chg %</th><th>Open / High / Low</th><th>Close vs Range</th><th>Volume</th><th>Signal Tag</th><th>Chart</th></tr>
+                  <tr><th>Symbol</th><th>Sector</th><th>LISTED AT</th><th>Live LTP</th><th>Chg %</th><th>Open / High / Low</th><th>Close vs Range</th><th>Volume</th><th>Signal Tag</th><th>Chart</th></tr>
                 </thead>
                 <tbody id="resBreakoutsBody"></tbody>
               </table>
@@ -3466,7 +3469,7 @@
             <div class="panel-header"><span>👑 Indian Dividend Aristocrats (10+ to 25-Year Continuous Cash Dividends &bull; Live Prices)</span></div>
             <div class="panel-body" style="padding:0; overflow-x:auto;">
               <table class="fox-table" style="width:100%;">
-                <thead><tr><th>#</th><th>Symbol</th><th>Streak</th><th>Div Yield</th><th>5Y Div Growth</th><th>TTM Div</th><th>Live Price</th><th>Day %</th><th>Chart</th></tr></thead>
+                <thead><tr><th>#</th><th>Symbol</th><th>LISTED AT</th><th>Streak</th><th>Div Yield</th><th>5Y Div Growth</th><th>TTM Div</th><th>Live Price</th><th>Day %</th><th>Chart</th></tr></thead>
                 <tbody id="resAristocratsBody"></tbody>
               </table>
             </div>
@@ -3657,6 +3660,7 @@
                 <tr>
                   <th>Type</th>
                   <th>Symbol</th>
+                  <th>LISTED AT</th>
                   <th>Underlying Name</th>
                   <th>Sector</th>
                   <th>Upstox Instrument Key</th>
@@ -4669,6 +4673,8 @@
           item.volume = t.volume;
           item.high = t.high;
           item.low = t.low;
+          if (t.listed_at) item.listed_at = t.listed_at;
+          if (t.time) item.lastUpdate = t.time;
 
           // If it's one of the 6 major indices, update top ribbon
           const idxEl = document.getElementById(`idx_${t.symbol}`);
@@ -4691,6 +4697,8 @@
             }
             const ltpCell = row.querySelector('.ltp-cell');
             if (ltpCell) ltpCell.innerText = t.price.toFixed(2);
+            const listedCell = row.querySelector('.listed-at-cell');
+            if (listedCell && (t.listed_at || t.time)) listedCell.innerText = t.listed_at || t.time;
           }
         }
       });
@@ -4749,8 +4757,10 @@
         };
         const pcnClass = m.pcn >= 0 ? 'text-green' : 'text-red';
         const isIdx = m.is_index ? '<span class="text-orange" style="font-size:9px;">[IDX]</span> ' : '';
+        const listedText = m.listed_at || m.lastUpdate || '--';
         tr.innerHTML = `
           <td><strong>${isIdx}${m.symbol}</strong></td>
+          <td class="listed-at-cell" style="font-family:'JetBrains Mono'; font-size:9.5px; color:#f1c40f; white-space:nowrap;">${listedText}</td>
           <td class="ltp-cell">${m.price.toFixed(2)}</td>
           <td class="pcn-cell ${pcnClass}">${m.pcn >= 0 ? '+' : ''}${m.pcn.toFixed(2)}%</td>
           <td style="color:var(--text-muted); font-size:10px;">${m.sector || 'F&O'}</td>
@@ -4772,8 +4782,10 @@
         };
         const isBull = m.pcn >= 0;
         const dirBadge = isBull ? `<span class="bg-green-cell">H</span>` : `<span class="bg-red-cell">L</span>`;
+        const listedText = m.listed_at || m.lastUpdate || '--';
         tr.innerHTML = `
           <td><b style="color:#fff;">${m.symbol}</b></td>
+          <td style="font-family:'JetBrains Mono'; font-size:9.5px; color:#f1c40f; white-space:nowrap;">${listedText}</td>
           <td>${dirBadge}</td>
           <td class="${isBull ? 'text-green' : 'text-red'}">${m.pcn >= 0 ? '+' : ''}${m.pcn.toFixed(2)}</td>
           <td style="font-weight:600;">${m.price.toFixed(2)}</td>
@@ -4851,6 +4863,7 @@
         tr.innerHTML = `
           <td>${typeBadge}</td>
           <td><strong>${m.symbol}</strong></td>
+          <td style="font-family:'JetBrains Mono'; font-size:10px; color:#f1c40f; white-space:nowrap;">⏰ ${m.listed_at || m.lastUpdate || '--'}</td>
           <td>${m.name}</td>
           <td>${m.sector || 'F&amp;O'}</td>
           <td><code style="color:#ff8a5c; background:#1c1713; padding:2px 6px; border-radius:3px; border:1px solid #4a2818;">${upstoxKey}</code></td>
@@ -5419,19 +5432,24 @@
         (data.matches || []).forEach(m => {
           const tr = document.createElement('tr');
           const isBull = m.changePct >= 0;
+          const listedTime = m.listed_at || (m.pickupTime ? m.pickupTime + ' IST' : '--');
           tr.innerHTML = `
-            <td><strong>${m.symbol}</strong></td>
-            <td>${m.name}</td>
-            <td>${m.sector}</td>
-            <td style="font-weight:600;">₹${m.price.toFixed(2)}</td>
-            <td class="${isBull ? 'text-green' : 'text-red'}">${isBull ? '+' : ''}${m.changePct.toFixed(2)}%</td>
-            <td class="text-orange">${m.reason}</td>
-            <td>${m.rsi}</td>
-            <td>₹${m.ema50.toFixed(2)}</td>
-            <td>₹${m.ema200.toFixed(2)}</td>
-            <td>₹${m.entry}</td>
-            <td class="text-red">₹${m.stopLoss}</td>
-            <td class="text-green">₹${m.target1}</td>
+            <td><strong>${m.symbol}</strong><div style="font-size:9px; color:#64748b;">${m.name || ''}</div></td>
+            <td><span class="badge-touch">${m.sector}</span></td>
+            <td><span style="font-family:'JetBrains Mono'; font-size:10px; color:#f1c40f; font-weight:700; white-space:nowrap;">⏰ ${listedTime}</span></td>
+            <td><span style="color:#ffb703; font-weight:700;">₹${m.entry}</span><div style="font-size:9px; color:#94a3b8;">${m.reason}</div></td>
+            <td style="font-weight:700;">₹${m.price.toFixed(2)}</td>
+            <td class="${isBull ? 'text-green' : 'text-red'}" style="font-weight:700;">${isBull ? '+' : ''}${m.changePct.toFixed(2)}%</td>
+            <td style="font-family:'JetBrains Mono'; font-size:10px;">SL: <span class="text-red">₹${m.stopLoss}</span></td>
+            <td style="font-family:'JetBrains Mono'; font-size:10px;">T1: <span class="text-green">₹${m.target1}</span></td>
+            <td>${Number(m.volume || 0).toLocaleString()}</td>
+            <td>--</td>
+            <td><span class="${isBull ? 'badge-long' : 'badge-short'}">${m.bias || (isBull ? 'BULLISH' : 'BEARISH')}</span></td>
+            <td>RSI ${m.rsi}</td>
+            <td>EMA50 ₹${m.ema50.toFixed(1)}</td>
+            <td>EMA200 ₹${m.ema200.toFixed(1)}</td>
+            <td>${m.winRatePct || 85}% (${m.claudeGrade || 'AAA'})</td>
+            <td><button class="tv-btn" onclick="openStockTradingView('${m.symbol}', 'NSE:${m.symbol}')">📈 TV</button></td>
           `;
           tbody.appendChild(tr);
         });
@@ -6089,6 +6107,7 @@
         <tr>
           <td><b style="color:#fff;">${s.symbol}</b></td>
           <td style="color:var(--text-muted); font-size:11px;">${s.name}</td>
+          <td style="font-family:'JetBrains Mono'; font-size:10px; color:#f1c40f; white-space:nowrap;">⏰ ${s.listed_at || s.lastUpdate || '--'}</td>
           <td><span class="badge-count" style="background:#1f242d;">${s.sector || 'F&O'}</span></td>
           <td>${s.lot_size || 50}</td>
           <td>0.05</td>
@@ -7986,15 +8005,31 @@
       }
     }
 
+    let resBreakoutsSearchTerm = '';
+
+    function filterResearchBreakouts(term) {
+      resBreakoutsSearchTerm = (term || '').toLowerCase().trim();
+      if (resDataCache.breakouts) renderResearchBreakoutsTable(resDataCache.breakouts);
+    }
+
     function renderResearchBreakoutsTable(data) {
       if (!data) return;
-      document.getElementById('resBreakoutMatchesCount').innerText = data.breakouts_count || 0;
-      document.getElementById('resBreakoutUniverseCount').innerText = data.total_universe_scanned || 224;
+      resDataCache.breakouts = data;
       const tbody = document.getElementById('resBreakoutsBody');
       if (!tbody) return;
-      const rows = data.breakouts || [];
+      let rows = data.breakouts || [];
+      if (resBreakoutsSearchTerm) {
+        rows = rows.filter(b =>
+          b.symbol.toLowerCase().includes(resBreakoutsSearchTerm) ||
+          (b.name || '').toLowerCase().includes(resBreakoutsSearchTerm) ||
+          (b.breakout_type || '').toLowerCase().includes(resBreakoutsSearchTerm) ||
+          (b.sector || '').toLowerCase().includes(resBreakoutsSearchTerm)
+        );
+      }
+      document.getElementById('resBreakoutMatchesCount').innerText = rows.length;
+      document.getElementById('resBreakoutUniverseCount').innerText = data.total_universe_scanned || 224;
       if (!rows.length) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:#94a3b8;">No scrips currently match this screen.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding:20px; color:#94a3b8;">No scrips currently match this screen.</td></tr>';
         return;
       }
       tbody.innerHTML = rows.map(b => {
@@ -8003,6 +8038,11 @@
           <tr style="cursor:pointer;" onclick="openStockTradingView('${b.symbol}', '${b.tv_symbol}')">
             <td><b style="color:#fff;">${b.symbol}</b><div style="font-size:9.5px; color:#64748b;">${b.name}</div></td>
             <td><span class="badge-touch">${b.sector}</span></td>
+            <td>
+              <div style="display:inline-flex; align-items:center; gap:4px; background:#181b22; padding:2px 7px; border-radius:4px; border:1px solid #2d3340; font-family:'JetBrains Mono'; font-size:10px; color:#f1c40f; font-weight:700; white-space:nowrap;">
+                <span>⏰</span><span>${b.listed_at || '--'}</span>
+              </div>
+            </td>
             <td style="font-family:'JetBrains Mono'; font-weight:700;">₹${b.price.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
             <td style="font-family:'JetBrains Mono'; font-weight:800;" class="${isUp?'text-green':'text-red'}">${isUp?'+':''}${b.change_pct.toFixed(2)}%</td>
             <td style="font-family:'JetBrains Mono'; font-size:10.5px;">${b.open} / <span class="text-green">${b.high}</span> / <span class="text-red">${b.low}</span></td>
@@ -8120,6 +8160,7 @@
             <tr style="cursor:pointer;" onclick="openStockTradingView('${ar.symbol}', 'NSE:${ar.symbol}')">
               <td style="color:#64748b; font-weight:700;">#${ar.rank}</td>
               <td><b style="color:#fff;">${ar.symbol}</b></td>
+              <td><span style="font-family:'JetBrains Mono'; font-size:10px; color:#f1c40f; font-weight:700; white-space:nowrap;">⏰ ${ar.listed_at || '--'}</span></td>
               <td><span class="badge-trap">${ar.streak}</span></td>
               <td style="font-family:'JetBrains Mono'; font-weight:800;" class="text-green">${ar.yield}</td>
               <td style="font-family:'JetBrains Mono'; color:#38bdf8;">${ar.growth_5y}</td>
@@ -8578,6 +8619,7 @@
               <tr>
                 <th>Symbol</th>
                 <th>Instrument Name</th>
+                <th>LISTED AT</th>
                 <th>Sector</th>
                 <th>Lot Size</th>
                 <th>Tick Size</th>

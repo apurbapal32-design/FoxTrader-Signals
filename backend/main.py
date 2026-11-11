@@ -1336,6 +1336,7 @@ def run_market_scanner(payload: Dict[str, Any] = Body(...)):
             setup = SMCEngine.calculate_trade_setup(df_calc, smc_dict)
             last_bar = df_calc.iloc[-1]
             pickup_time = datetime.now().strftime("%H:%M:%S")
+            listed_at = datetime.now().strftime("%I:%M:%S %p IST")
             preset_key = preset_id or "smc_bullish_bos_fvg"
             meta = ClaudeAITraderSkill.get_preset_meta(preset_key)
             win_rate = ClaudeAITraderSkill.calculate_stock_win_rate(sym, match_reason, item["changePct"])
@@ -1371,6 +1372,7 @@ def run_market_scanner(payload: Dict[str, Any] = Body(...)):
                 "volume": int(last_bar['volume']),
                 "reason": match_reason,
                 "pickupTime": pickup_time,
+                "listed_at": listed_at,
                 "rsi": round(float(last_bar.get('rsi_14', 50)), 1),
                 "ema50": round(float(last_bar.get('ema_50', 0)), 2),
                 "ema200": round(float(last_bar.get('ema_200', 0)), 2),

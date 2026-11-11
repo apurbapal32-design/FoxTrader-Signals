@@ -475,10 +475,12 @@ class ResearchLayerEngine:
                 include = ((sym_seed + scr_seed) % 7 == 0) or (pcn >= 1.4 and close_pos >= 75)
 
             if include:
+                listed_at = s.get("listed_at") or datetime.now().strftime("%I:%M:%S %p IST")
                 breakouts.append({
                     "symbol": sym,
                     "name": s.get("name", sym),
                     "sector": s.get("sector", "F&O"),
+                    "listed_at": listed_at,
                     "price": round(price, 2),
                     "change_pct": round(pcn, 2),
                     "open": round(open_p, 2),
@@ -597,18 +599,21 @@ class ResearchLayerEngine:
                 cls._cache[cache_key] = data
                 cls._cache_ts[cache_key] = now
 
-        # Overlay live Upstox LTP prices onto Dividend Aristocrats!
+        # Overlay live Upstox LTP prices and Listed At timestamps onto Dividend Aristocrats!
         aristocrats_live = []
         stocks = data_mgr.stocks if (data_mgr and hasattr(data_mgr, "stocks")) else {}
+        fallback_listed = datetime.now().strftime("%I:%M:%S %p IST")
         for row in data["aristocrats"]:
             item = dict(row)
             st = stocks.get(item["symbol"])
             if st:
                 item["live_price"] = round(float(st.get("price", item["base_price"])), 2)
                 item["change_pct"] = round(float(st.get("pcn", 0.0)), 2)
+                item["listed_at"] = st.get("listed_at") or fallback_listed
             else:
                 item["live_price"] = item["base_price"]
                 item["change_pct"] = 0.0
+                item["listed_at"] = fallback_listed
             aristocrats_live.append(item)
 
         out = dict(data)
