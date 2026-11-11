@@ -26,7 +26,7 @@ from typing import Dict, List, Any, Optional
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query, Body, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse, Response
 import concurrent.futures
 
 from data_feed import DataFeedManager
@@ -41,6 +41,7 @@ from claude_trader_skill import ClaudeAITraderSkill, CLAUDE_TRADER_PRESETS
 from live_signal_tracker import LiveSignalTracker
 from institutional_scanner import InstitutionalScannerEngine
 from sr_strategy_engine import SRStrategyEngine
+from research_layer_engine import ResearchLayerEngine
 
 app = FastAPI(title="Dhan Muhurat Platform API", version="3.0.0")
 
@@ -196,6 +197,7 @@ async def background_tick_and_scan_loop():
 async def startup_event():
     ai_sentinel.start_background_monitor()
     asyncio.create_task(background_tick_and_scan_loop())
+    asyncio.create_task(asyncio.to_thread(ResearchLayerEngine.warmup, data_mgr))
 
 @app.websocket("/ws/live")
 async def websocket_endpoint(websocket: WebSocket):
@@ -828,6 +830,75 @@ def get_sr_stock_analysis(symbol: str):
     name = stock_data.get("name", sym)
     sector = stock_data.get("sector", "FNO")
     return SRStrategyEngine.generate_sr_signal(sym, name, price, chg, category=sector)
+
+# ----------------- INSTITUTIONAL RESEARCH LAYER HUB ENDPOINTS ----------------- #
+
+@app.get("/api/research/overview")
+def get_research_overview():
+    """Returns unified Market Brief, GIFT Nifty, Macro, FII/DII summary, Nifty PE & Breadth."""
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
+        fut_fii = ex.submit(ResearchLayerEngine.get_fii_dii_data)
+        fut_gift = ex.submit(ResearchLayerEngine.get_gift_nifty_and_macro, data_mgr)
+        fut_pe = ex.submit(ResearchLayerEngine.get_nifty_pe_data)
+        fut_bo = ex.submit(ResearchLayerEngine.get_breakouts_and_screens, data_mgr, "ALL")
+        fii_dii = fut_fii.result()
+        gift_macro = fut_gift.result()
+        nifty_pe = fut_pe.result()
+        breakouts = fut_bo.result()
+    return {
+        "status": "ok",
+        "fii_dii": fii_dii,
+        "gift_macro": gift_macro,
+        "nifty_pe": nifty_pe,
+        "breadth": {
+            "advances": breakouts["advances"],
+            "declines": breakouts["declines"],
+            "universe_scanned": breakouts["total_universe_scanned"],
+            "breakouts_20d_fno": breakouts["breakouts_count"],
+            "nse_bse_20d_high_total": breakouts["nse_bse_20d_high_total"]
+        }
+    }
+
+@app.get("/api/research/fii-dii")
+def get_research_fii_dii():
+    """Returns FII & DII cash flows, rolling windows, and session history."""
+    return ResearchLayerEngine.get_fii_dii_data()
+
+@app.get("/api/research/fii-dii/csv")
+def download_research_fii_dii_csv():
+    """Downloads session-by-session FII/DII institutional flows as a CSV spreadsheet."""
+    csv_text = ResearchLayerEngine.generate_fii_dii_csv()
+    return Response(
+        content=csv_text,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=dhan_muhurat_fii_dii_flows.csv"}
+    )
+
+@app.get("/api/research/nifty-pe")
+def get_research_nifty_pe():
+    """Returns Nifty 50 PE, P/B, dividend yield, historical ranges and sectoral index multiples."""
+    return ResearchLayerEngine.get_nifty_pe_data()
+
+@app.get("/api/research/breakouts")
+def get_research_breakouts(screen_id: str = Query("ALL"), timeframe: str = Query("20D")):
+    """Returns live breakout stocks & 60 ready-made research screens across Upstox 224 universe."""
+    return ResearchLayerEngine.get_breakouts_and_screens(data_mgr, filter_screen=screen_id, timeframe=timeframe)
+
+@app.get("/api/research/mtf")
+def get_research_mtf():
+    """Returns MTF broker rate cards, 90-day interest comparison & per-stock margins across 11 brokers."""
+    return ResearchLayerEngine.get_mtf_comparison()
+
+@app.get("/api/research/events")
+def get_research_events():
+    """Returns IPO Calendar, Results Timing, NSE Filings & Dividend Aristocrats with live Upstox prices."""
+    return ResearchLayerEngine.get_events_and_aristocrats(data_mgr)
+
+@app.post("/api/research/refresh")
+def refresh_research_cache():
+    """Clears Research Layer cache and forces live refresh."""
+    ResearchLayerEngine.clear_cache()
+    return {"status": "refreshed", "overview": get_research_overview()}
 
 # ----------------- AI SENTINEL AGENT ENDPOINTS ----------------- #
 

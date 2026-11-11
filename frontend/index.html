@@ -2083,6 +2083,133 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
+    /* ==========================================================================
+       RESEARCH LAYER HUB (MARKET BRIEF, FII/DII, NIFTY PE, BREAKOUTS, MTF, EVENTS)
+       ========================================================================== */
+    .res-subnav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: #101318;
+      border: 1px solid #262d3a;
+      padding: 8px 10px;
+      border-radius: 6px;
+    }
+    .res-subtab {
+      background: #171c26;
+      border: 1px solid #2c3545;
+      color: #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .res-subtab:hover {
+      border-color: #38bdf8;
+      color: #fff;
+    }
+    .res-subtab.active {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      border-color: #38bdf8;
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.25);
+    }
+    .res-pane {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .res-pane.active {
+      display: flex;
+    }
+    .res-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 8px;
+    }
+    .res-kpi-card {
+      background: #131720;
+      border: 1px solid #262f3e;
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .res-kpi-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .res-kpi-val {
+      font-size: 18px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: #fff;
+    }
+    .res-kpi-sub {
+      font-size: 10.5px;
+      color: #94a3b8;
+    }
+    .res-two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 960px) {
+      .res-two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+    .screen-chip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+      gap: 6px;
+      max-height: 250px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+    .screen-chip {
+      background: #161b24;
+      border: 1px solid #293242;
+      border-radius: 5px;
+      padding: 7px 9px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .screen-chip:hover {
+      border-color: #38bdf8;
+      background: #1b2230;
+    }
+    .screen-chip.active {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.12);
+    }
+    .pe-gauge-bar {
+      position: relative;
+      height: 14px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #10b981 0%, #38bdf8 40%, #f59e0b 70%, #ef4444 100%);
+      margin: 10px 0 6px;
+    }
+    .pe-gauge-pin {
+      position: absolute;
+      top: -4px;
+      width: 4px;
+      height: 22px;
+      background: #fff;
+      border: 1px solid #000;
+      border-radius: 2px;
+      box-shadow: 0 0 8px #fff;
+    }
+
   </style>
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script>
@@ -2299,6 +2426,8 @@
         if (typeof fetchApexQuantStrategy === 'function') fetchApexQuantStrategy();
       } else if (viewName === 'sr-engine') {
         if (typeof fetchSREngineData === 'function') fetchSREngineData();
+      } else if (viewName === 'research') {
+        if (typeof fetchResearchHubData === 'function') fetchResearchHubData();
       } else if (viewName === 'momentum-signals') {
         if (typeof fetchTop10MomentumSignals === 'function') fetchTop10MomentumSignals();
       } else if (viewName === 'nocode') {
@@ -2408,6 +2537,10 @@
         <span>🎯 Fast S&amp;R (Trap AI)</span>
         <span class="badge-count" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:800;">TRAP 93%</span>
       </div>
+    <div class="mod-tab" data-view="research" onclick="selectLeftSidebarView('research')">
+        <span>🔬 Research Layer</span>
+        <span class="badge-count" style="background:linear-gradient(135deg, #0284c7, #2563eb); color:#fff; font-weight:800;">FII/DII • MTF</span>
+      </div>
       <div class="mod-tab" data-view="heatmap" onclick="selectLeftSidebarView('heatmap')">
         <span>🗺️ Sector Heatmap</span>
         <span class="badge-count" style="background:#10b981;">LIVE</span>
@@ -2474,6 +2607,13 @@
           <span class="sidebar-icon">🎯</span>
           <span class="sidebar-label">S&amp;R Master (Trap AI)</span>
           <span class="sidebar-badge" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff;">TRAP</span>
+        </div>
+
+        <!-- 2.6 Market Research Layer Hub -->
+        <div class="sidebar-item" data-view="research" data-title="Institutional Research Layer (FII/DII, PE, Breakouts, 11-Broker MTF, IPOs)" onclick="selectLeftSidebarView('research')">
+          <span class="sidebar-icon">🔬</span>
+          <span class="sidebar-label">Research Layer Hub</span>
+          <span class="sidebar-badge" style="background:linear-gradient(135deg, #0284c7, #2563eb); color:#fff;">DATA</span>
         </div>
 
         <!-- 3. Real-Time Scanner -->
@@ -3040,6 +3180,296 @@
                 <tr><td colspan="17" style="text-align:center; padding:24px; color:#94a3b8;">Scanning 224 F&amp;O universe for Support, Resistance &amp; Trap Setups...</td></tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2.6 RESEARCH LAYER HUB (MARKET BRIEF, FII/DII FLOWS, NIFTY PE, BREAKOUTS & 60 SCREENS, MTF 11 BROKERS, IPOS & FILINGS) -->
+    <section class="view-container" id="view-research">
+      <div style="width:100%; height:100%; display:flex; flex-direction:column; padding:10px; gap:10px; overflow-y:auto;">
+
+        <!-- Top Research Header -->
+        <div class="smc-card" style="padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; background:linear-gradient(135deg, #10151f, #0d1829); border:1px solid #0284c7;">
+          <div>
+            <div style="font-size:17px; font-weight:900; color:#fff; display:flex; align-items:center; gap:8px;">
+              <span>🔬 Institutional Research Layer</span>
+              <span class="badge-count" style="background:#0284c7; color:#fff; font-weight:800;">EVERY NUMBER HAS AN ADDRESS</span>
+            </div>
+            <div style="font-size:11px; color:#94a3b8; margin-top:3px;">
+              Indian Markets Brief &bull; FII/DII Flows + CSV &bull; GIFT Nifty &bull; Nifty 50 PE History &bull; 60 Ready-Made Screens &bull; 11-Broker MTF &bull; Corporate Filings &amp; Dividends
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <a href="/api/research/fii-dii/csv" download="dhan_muhurat_fii_dii_flows.csv" class="fox-btn fox-btn-secondary" style="text-decoration:none; padding:6px 12px; font-size:11px;">📥 FII/DII CSV</a>
+            <button class="fox-btn" onclick="refreshResearchAll()" style="background:linear-gradient(135deg, #0284c7, #1d4ed8); padding:6px 14px;">🔄 Refresh Research</button>
+          </div>
+        </div>
+
+        <!-- 6 Research Sub-Tabs -->
+        <div class="res-subnav">
+          <button class="res-subtab active" id="resTabBtn-brief" onclick="switchResearchSubtab('brief')">📊 Market Brief &amp; GIFT Nifty</button>
+          <button class="res-subtab" id="resTabBtn-fiidii" onclick="switchResearchSubtab('fiidii')">🏛️ FII / DII Flows</button>
+          <button class="res-subtab" id="resTabBtn-pe" onclick="switchResearchSubtab('pe')">📈 Nifty 50 PE &amp; Sectors</button>
+          <button class="res-subtab" id="resTabBtn-breakouts" onclick="switchResearchSubtab('breakouts')">🚀 Breakouts &amp; 60 Screens</button>
+          <button class="res-subtab" id="resTabBtn-mtf" onclick="switchResearchSubtab('mtf')">💳 MTF Rates (11 Brokers)</button>
+          <button class="res-subtab" id="resTabBtn-events" onclick="switchResearchSubtab('events')">📅 IPOs, Filings &amp; Dividends</button>
+        </div>
+
+        <!-- SUB-TAB 1: MARKET BRIEF & GIFT NIFTY -->
+        <div class="res-pane active" id="resPane-brief">
+          <div class="res-kpi-grid" id="resBriefKpiGrid">
+            <div class="res-kpi-card"><div class="res-kpi-label">NIFTY 50 &amp; SENSEX</div><div class="res-kpi-val">Loading...</div></div>
+          </div>
+
+          <div class="res-two-col">
+            <div class="fox-panel" style="display:flex; flex-direction:column;">
+              <div class="panel-header"><span>🌏 GIFT Nifty vs Nifty 50 Spot Spread</span><span id="resGiftUpdated" style="font-size:10px; color:#94a3b8;">--</span></div>
+              <div class="panel-body" style="padding:12px; display:flex; flex-direction:column; gap:10px;" id="resGiftBox">
+                Loading GIFT Nifty data...
+              </div>
+            </div>
+
+            <div class="fox-panel" style="display:flex; flex-direction:column;">
+              <div class="panel-header"><span>🌐 Macro Tape (India VIX, USD/INR, Crude, Gold, US 10Y)</span></div>
+              <div class="panel-body" style="padding:0;">
+                <table class="fox-table" style="width:100%;">
+                  <thead><tr><th>Indicator</th><th>Last Print</th><th>Chg %</th><th>Context</th></tr></thead>
+                  <tbody id="resMacroBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="fox-panel">
+            <div class="panel-header"><span>📝 Session Highlights in Brief</span></div>
+            <div class="panel-body" style="padding:12px;" id="resSummaryBullets"></div>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 2: FII & DII FLOWS + CSV -->
+        <div class="res-pane" id="resPane-fiidii">
+          <div class="res-kpi-grid" id="resFiiKpiGrid"></div>
+
+          <div class="res-two-col">
+            <div class="fox-panel">
+              <div class="panel-header"><span>📊 FII vs DII Net Flows Chart (Rs Crore)</span></div>
+              <div class="panel-body" style="padding:10px;">
+                <canvas id="resFiiCanvas" width="560" height="220" style="width:100%; height:220px; background:#0f131a; border-radius:6px;"></canvas>
+              </div>
+            </div>
+
+            <div class="fox-panel">
+              <div class="panel-header"><span>⏱️ Rolling Horizon Flows</span></div>
+              <div class="panel-body" style="padding:0; overflow-x:auto;">
+                <table class="fox-table" style="width:100%;">
+                  <thead><tr><th>Window</th><th>FII Net</th><th>DII Net</th><th>Nifty Return</th></tr></thead>
+                  <tbody id="resFiiRollingBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="fox-panel">
+            <div class="panel-header">
+              <span>📅 Session-by-Session NSE Cash Market Flows (Cr)</span>
+              <a href="/api/research/fii-dii/csv" download="dhan_muhurat_fii_dii_flows.csv" style="color:#38bdf8; font-size:11px; text-decoration:none; font-weight:700;">📥 Download CSV</a>
+            </div>
+            <div class="panel-body" style="padding:0; overflow-x:auto;">
+              <table class="fox-table" style="width:100%;">
+                <thead>
+                  <tr><th>Session Date</th><th>FII Bought</th><th>FII Sold</th><th>FII Net</th><th>DII Bought</th><th>DII Sold</th><th>DII Net</th><th>Nifty Close</th></tr>
+                </thead>
+                <tbody id="resFiiSessionsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 3: NIFTY 50 PE & SECTORS -->
+        <div class="res-pane" id="resPane-pe">
+          <div class="smc-card" style="padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div>
+                <div style="font-size:13px; font-weight:800; color:#fff;">Nifty 50 P/E Valuation Gauge (Consolidated Mar 2021 – Nov 2026)</div>
+                <div id="resPeSubNote" style="font-size:11px; color:#94a3b8; margin-top:2px;">--</div>
+              </div>
+              <div style="font-size:22px; font-weight:900; font-family:'JetBrains Mono'; color:#38bdf8;" id="resPeMainVal">20.59x</div>
+            </div>
+            <div class="pe-gauge-bar">
+              <div class="pe-gauge-pin" id="resPeGaugePin" style="left:28%;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:10px; color:#94a3b8; font-family:'JetBrains Mono';">
+              <span>19.30x (Cheap / Oct 2026 Low)</span>
+              <span>22.01x (Consolidated Median)</span>
+              <span>22.55x (Mean)</span>
+              <span>33.20x (Mar 2021 Peak)</span>
+            </div>
+          </div>
+
+          <div class="res-two-col">
+            <div class="fox-panel">
+              <div class="panel-header"><span>📆 Yearly Nifty 50 Consolidated P/E Bands</span></div>
+              <div class="panel-body" style="padding:0; overflow-x:auto;">
+                <table class="fox-table" style="width:100%;">
+                  <thead><tr><th>Year</th><th>Latest</th><th>Low</th><th>High</th><th>Basis</th></tr></thead>
+                  <tbody id="resPeYearlyBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="fox-panel">
+              <div class="panel-header"><span>📊 Sectoral &amp; Thematic Index Valuations (P/E, P/B, Yield)</span></div>
+              <div class="panel-body" style="padding:0; overflow-x:auto;">
+                <table class="fox-table" style="width:100%;">
+                  <thead><tr><th>Index</th><th>P/E</th><th>P/B</th><th>Div Yield</th><th>Historical Low</th></tr></thead>
+                  <tbody id="resPeSectorsBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 4: BREAKOUTS & 60 READY-MADE SCREENS -->
+        <div class="res-pane" id="resPane-breakouts">
+          <div class="fox-panel">
+            <div class="panel-header">
+              <span>🧩 60 Ready-Made Institutional Research Screens (Click any screen to filter live F&amp;O stocks)</span>
+              <span id="resActiveScreenLabel" style="font-size:11px; color:#34d399; font-weight:700;">All Breakouts</span>
+            </div>
+            <div class="panel-body" style="padding:8px;">
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+                <button class="filter-pill active" onclick="filterResearchScreenCat('ALL', this)">All 60 Screens</button>
+                <button class="filter-pill" onclick="filterResearchScreenCat('Breakouts', this)">Breakouts (10)</button>
+                <button class="filter-pill" onclick="filterResearchScreenCat('Flows', this)">Flows (10)</button>
+                <button class="filter-pill" onclick="filterResearchScreenCat('Valuation', this)">Valuation (10)</button>
+                <button class="filter-pill" onclick="filterResearchScreenCat('Technical', this)">Technical/SMC (10)</button>
+                <button class="filter-pill" onclick="filterResearchScreenCat('F&O', this)">F&amp;O OI (10)</button>
+                <button class="filter-pill" onclick="filterResearchScreenCat('Catalysts', this)">Catalysts (10)</button>
+                <button class="filter-pill" onclick="selectResearchScreen('ALL', 'All Breakouts')" style="margin-left:auto; border-color:#38bdf8; color:#38bdf8;">Clear Filter</button>
+              </div>
+              <div class="screen-chip-grid" id="resScreenChipGrid"></div>
+            </div>
+          </div>
+
+          <div class="fox-panel">
+            <div class="panel-header">
+              <span>🚀 Live Scanned Breakouts &amp; Screen Matches (<span id="resBreakoutMatchesCount">0</span> Matched from <span id="resBreakoutUniverseCount">224</span> F&amp;O Scrips &bull; NSE+BSE 20D Highs: 213/5,041)</span>
+            </div>
+            <div class="panel-body" style="padding:0; overflow-x:auto;">
+              <table class="fox-table" style="width:100%;">
+                <thead>
+                  <tr><th>Symbol</th><th>Sector</th><th>Live LTP</th><th>Chg %</th><th>Open / High / Low</th><th>Close vs Range</th><th>Volume</th><th>Signal Tag</th><th>Chart</th></tr>
+                </thead>
+                <tbody id="resBreakoutsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 5: 11-BROKER MTF RATES & CALCULATOR -->
+        <div class="res-pane" id="resPane-mtf">
+          <div class="smc-card" style="padding:12px 16px;">
+            <div style="font-size:13px; font-weight:800; color:#fff; margin-bottom:8px;">🧮 Interactive MTF Margin Interest Calculator</div>
+            <div style="display:flex; flex-wrap:wrap; gap:14px; align-items:center;">
+              <div style="flex:1; min-width:220px;">
+                <label style="font-size:10px; color:#94a3b8; display:block; margin-bottom:3px;">Funded Borrowing Amount (₹): <b id="mtfCalcAmtLabel" style="color:#ffb703;">₹1,00,000</b></label>
+                <input type="range" id="mtfCalcAmount" min="25000" max="2500000" step="25000" value="100000" oninput="updateMtfCalculator()" style="width:100%;">
+              </div>
+              <div style="min-width:140px;">
+                <label style="font-size:10px; color:#94a3b8; display:block; margin-bottom:3px;">Holding Days:</label>
+                <select id="mtfCalcDays" class="fox-select" onchange="updateMtfCalculator()">
+                  <option value="15">15 Days</option>
+                  <option value="30">30 Days</option>
+                  <option value="60">60 Days</option>
+                  <option value="90" selected>90 Days (Quarter)</option>
+                  <option value="180">180 Days</option>
+                </select>
+              </div>
+              <div id="mtfCalcSummary" style="font-size:11px; color:#34d399; font-weight:700; min-width:240px;">
+                Lowest Standard: Dhan @ ₹3,080 vs Upstox @ ₹4,500
+              </div>
+            </div>
+          </div>
+
+          <div class="res-two-col">
+            <div class="fox-panel">
+              <div class="panel-header"><span>💳 Standard MTF Interest Boards (Per ₹1L &amp; Pledge Fees)</span></div>
+              <div class="panel-body" style="padding:0; overflow-x:auto;">
+                <table class="fox-table" style="width:100%;">
+                  <thead><tr><th>Broker</th><th>Rate p.a.</th><th>Daily / ₹1L</th><th>Est. Cost</th><th>Pledge Fee</th><th>Stocks</th></tr></thead>
+                  <tbody id="resMtfStdBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="fox-panel">
+              <div class="panel-header"><span>🏷️ Promotional / Tiered Plans &amp; Total Coverage (11 Brokers)</span></div>
+              <div class="panel-body" style="padding:0; overflow-x:auto;">
+                <table class="fox-table" style="width:100%;">
+                  <thead><tr><th>Broker</th><th>Plan Rate</th><th>Stocks Funded</th><th>Terms / Plan Condition</th></tr></thead>
+                  <tbody id="resMtfPromoBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="fox-panel">
+            <div class="panel-header"><span>📋 Sample MTF Margin Requirement Comparison (Across 2,111 NSE/BSE Stocks)</span></div>
+            <div class="panel-body" style="padding:0; overflow-x:auto;">
+              <table class="fox-table" style="width:100%;">
+                <thead><tr><th>Symbol</th><th>Upstox</th><th>Zerodha</th><th>Groww</th><th>Dhan</th><th>Kotak Neo</th></tr></thead>
+                <tbody id="resMtfMarginsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 6: IPOS, RESULTS TIMING, FILINGS & DIVIDEND ARISTOCRATS -->
+        <div class="res-pane" id="resPane-events">
+          <div class="res-two-col">
+            <div class="fox-panel">
+              <div class="panel-header"><span>🔔 Latest NSE Corporate Filings &amp; Announcements</span></div>
+              <div class="panel-body" style="padding:0; max-height:300px; overflow-y:auto;">
+                <table class="fox-table" style="width:100%;">
+                  <thead><tr><th>Time (IST)</th><th>Symbol</th><th>Category</th><th>Announcement Summary</th></tr></thead>
+                  <tbody id="resAnnBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div class="fox-panel">
+                <div class="panel-header"><span>🗓️ Upcoming Quarterly Results Timing Tracker</span></div>
+                <div class="panel-body" style="padding:0; max-height:170px; overflow-y:auto;">
+                  <table class="fox-table" style="width:100%;">
+                    <thead><tr><th>Date</th><th>Symbol</th><th>Company</th><th>YoY Timing</th></tr></thead>
+                    <tbody id="resResultsBody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="fox-panel">
+                <div class="panel-header"><span>🎟️ IPO Calendar Watch (Mainboard &amp; SME)</span></div>
+                <div class="panel-body" style="padding:0; overflow-x:auto;">
+                  <table class="fox-table" style="width:100%;">
+                    <thead><tr><th>Issue Name</th><th>Dates</th><th>Price Band</th><th>Lot / Min</th><th>Status</th></tr></thead>
+                    <tbody id="resIpoBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fox-panel">
+            <div class="panel-header"><span>👑 Indian Dividend Aristocrats (10+ to 25-Year Continuous Cash Dividends &bull; Live Prices)</span></div>
+            <div class="panel-body" style="padding:0; overflow-x:auto;">
+              <table class="fox-table" style="width:100%;">
+                <thead><tr><th>#</th><th>Symbol</th><th>Streak</th><th>Div Yield</th><th>5Y Div Growth</th><th>TTM Div</th><th>Live Price</th><th>Day %</th><th>Chart</th></tr></thead>
+                <tbody id="resAristocratsBody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -7242,6 +7672,465 @@
       const setup = allSRSignals.find(s => s.symbol === symbol) || allSRIndices.find(s => s.symbol === symbol);
       if (!setup) return;
       alert(`[S&R MASTER AI SETUP: ${setup.symbol}]\n\nStrategy: ${setup.strategy_name}\nSignal: ${setup.signal_action}\nListed At: ${setup.listed_at}\nEntry Price: ₹${setup.entry_price}\nStop Loss: ₹${setup.stop_loss}\nTarget 1: ₹${setup.target_1}\nTarget 2: ₹${setup.target_2}\nTarget 3: ₹${setup.target_3}\n\nInstitutional Narrative:\n${setup.setup_notes}`);
+    }
+
+    // =========================================================================
+    // RESEARCH LAYER HUB CLIENT CONTROLLERS
+    // =========================================================================
+    let resDataCache = { overview: null, mtf: null, events: null, breakouts: null, screens: [] };
+    let resActiveScreenId = 'ALL';
+    let resScreenCategory = 'ALL';
+
+    function switchResearchSubtab(tabKey) {
+      document.querySelectorAll('.res-subtab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.res-pane').forEach(p => p.classList.remove('active'));
+      document.getElementById(`resTabBtn-${tabKey}`)?.classList.add('active');
+      document.getElementById(`resPane-${tabKey}`)?.classList.add('active');
+      if (tabKey === 'fiidii' && resDataCache.overview?.fii_dii) {
+        setTimeout(() => drawFiiDiiChart(resDataCache.overview.fii_dii.sessions || []), 40);
+      }
+    }
+
+    async function fetchResearchHubData() {
+      const baseOrigin = (window.location.protocol === 'file:' || !window.location.host) ? 'http://127.0.0.1:8088' : '';
+      try {
+        const [ovRes, brRes, mtfRes, evRes] = await Promise.all([
+          fetch(`${baseOrigin}/api/research/overview`),
+          fetch(`${baseOrigin}/api/research/breakouts?screen_id=${encodeURIComponent(resActiveScreenId)}`),
+          fetch(`${baseOrigin}/api/research/mtf`),
+          fetch(`${baseOrigin}/api/research/events`)
+        ]);
+        if (ovRes.ok) {
+          resDataCache.overview = await ovRes.json();
+          renderResearchOverview(resDataCache.overview);
+          renderResearchFiiDii(resDataCache.overview.fii_dii);
+          renderResearchNiftyPe(resDataCache.overview.nifty_pe);
+        }
+        if (brRes.ok) {
+          resDataCache.breakouts = await brRes.json();
+          resDataCache.screens = resDataCache.breakouts.screens || [];
+          renderResearchScreenChips();
+          renderResearchBreakoutsTable(resDataCache.breakouts);
+        }
+        if (mtfRes.ok) {
+          resDataCache.mtf = await mtfRes.json();
+          renderResearchMtf(resDataCache.mtf);
+        }
+        if (evRes.ok) {
+          resDataCache.events = await evRes.json();
+          renderResearchEvents(resDataCache.events);
+        }
+      } catch (err) {
+        console.error('Error loading Research Layer Hub:', err);
+      }
+    }
+
+    async function refreshResearchAll() {
+      const baseOrigin = (window.location.protocol === 'file:' || !window.location.host) ? 'http://127.0.0.1:8088' : '';
+      try {
+        await fetch(`${baseOrigin}/api/research/refresh`, { method: 'POST' });
+        await fetchResearchHubData();
+        showToast('✅ Research Layer synced with live NSE/Upstox data!');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderResearchOverview(ov) {
+      if (!ov) return;
+      const gm = ov.gift_macro || {};
+      const fii = ov.fii_dii || {};
+      const pe = ov.nifty_pe || {};
+      const br = ov.breadth || {};
+
+      const nUp = (gm.nifty_chg || 0) >= 0;
+      const sUp = (gm.sensex_chg || 0) >= 0;
+      const fiiNet = fii.fii_today?.net || 0;
+      const diiNet = fii.dii_today?.net || 0;
+
+      const kpiEl = document.getElementById('resBriefKpiGrid');
+      if (kpiEl) {
+        kpiEl.innerHTML = `
+          <div class="res-kpi-card">
+            <div class="res-kpi-label">NIFTY 50 • SENSEX</div>
+            <div class="res-kpi-val ${nUp ? 'text-green' : 'text-red'}">${Number(gm.nifty_spot || 0).toLocaleString()} (${nUp ? '+' : ''}${Number(gm.nifty_chg || 0).toFixed(2)}%)</div>
+            <div class="res-kpi-sub">Sensex: <b class="${sUp ? 'text-green' : 'text-red'}">${Number(gm.sensex_spot || 0).toLocaleString()} (${sUp ? '+' : ''}${Number(gm.sensex_chg || 0).toFixed(2)}%)</b></div>
+          </div>
+          <div class="res-kpi-card">
+            <div class="res-kpi-label">FII / DII CASH NET FLOW</div>
+            <div class="res-kpi-val ${fiiNet >= 0 ? 'text-green' : 'text-red'}">FII ${fiiNet >= 0 ? '+' : ''}₹${Math.round(fiiNet).toLocaleString()} Cr</div>
+            <div class="res-kpi-sub">DII Net: <b class="${diiNet >= 0 ? 'text-green' : 'text-red'}">${diiNet >= 0 ? '+' : ''}₹${Math.round(diiNet).toLocaleString()} Cr</b></div>
+          </div>
+          <div class="res-kpi-card">
+            <div class="res-kpi-label">NIFTY 50 VALUATION (P/E)</div>
+            <div class="res-kpi-val" style="color:#38bdf8;">${pe.current_pe || 20.59}x</div>
+            <div class="res-kpi-sub">${pe.lower_percentile_note || 'Consolidated NSE Close'}</div>
+          </div>
+          <div class="res-kpi-card">
+            <div class="res-kpi-label">MARKET BREADTH &amp; 20D HIGHS</div>
+            <div class="res-kpi-val text-green">${br.advances || 0} Adv / <span class="text-red">${br.declines || 0} Dec</span></div>
+            <div class="res-kpi-sub">NSE/BSE >20D High: <b>${br.nse_bse_20d_high_total || 213} of 5,041</b> stocks</div>
+          </div>
+        `;
+      }
+
+      const giftUp = document.getElementById('resGiftUpdated');
+      if (giftUp) giftUp.innerText = gm.updated_at || '';
+
+      const giftBox = document.getElementById('resGiftBox');
+      if (giftBox) {
+        const sp = Number(gm.spread_pts || 0);
+        giftBox.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#141923; border:1px solid #263042; border-radius:6px; padding:12px;">
+            <div>
+              <div style="font-size:11px; color:#94a3b8;">GIFT NIFTY LIVE FUTURES</div>
+              <div style="font-size:22px; font-weight:900; font-family:'JetBrains Mono'; color:#fff;">${Number(gm.gift_nifty || 0).toLocaleString(undefined,{minimumFractionDigits:2})} <span class="${(gm.gift_chg_pct||0)>=0?'text-green':'text-red'}" style="font-size:13px;">(${(gm.gift_chg_pct||0)>=0?'+':''}${gm.gift_chg_pct}%)</span></div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:10px; color:#94a3b8;">SPREAD VS NIFTY CLOSE</div>
+              <div style="font-size:16px; font-weight:800; font-family:'JetBrains Mono';" class="${sp>=0?'text-green':'text-orange'}">${sp>=0?'+':''}${sp.toFixed(2)} pts</div>
+              <div style="font-size:10px; color:#38bdf8;">${gm.implied_open || ''}</div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; font-size:11px; font-family:'JetBrains Mono';">
+            <div style="background:#10141c; padding:8px; border-radius:4px; border:1px solid #222a38;">Open: <b>${Number(gm.gift_open||0).toLocaleString()}</b></div>
+            <div style="background:#10141c; padding:8px; border-radius:4px; border:1px solid #222a38;">High: <b class="text-green">${Number(gm.gift_high||0).toLocaleString()}</b></div>
+            <div style="background:#10141c; padding:8px; border-radius:4px; border:1px solid #222a38;">Low: <b class="text-red">${Number(gm.gift_low||0).toLocaleString()}</b></div>
+          </div>
+        `;
+      }
+
+      const macroBody = document.getElementById('resMacroBody');
+      if (macroBody) {
+        macroBody.innerHTML = (gm.macro || []).map(m => `
+          <tr>
+            <td style="font-weight:700; color:#fff;">${m.name}</td>
+            <td style="font-family:'JetBrains Mono'; font-weight:700;">${m.value}</td>
+            <td style="font-family:'JetBrains Mono';" class="${m.chg.startsWith('-') ? 'text-red' : 'text-green'}">${m.chg}</td>
+            <td style="color:#94a3b8; font-size:10.5px;">${m.status}</td>
+          </tr>
+        `).join('');
+      }
+
+      const bulletsEl = document.getElementById('resSummaryBullets');
+      if (bulletsEl) {
+        const notes = fii.summary_notes || [];
+        bulletsEl.innerHTML = notes.map(n => `<div style="margin-bottom:6px; font-size:12px; color:#cbd5e1;">&bull; ${n}</div>`).join('') +
+          `<div style="font-size:12px; color:#38bdf8;">&bull; <b>MTF Lowest Rate:</b> 12.49% p.a. (Dhan) to 18.25% p.a. (Upstox) across 2,111 NSE/BSE stocks tracked across 11 brokers.</div>`;
+      }
+    }
+
+    function renderResearchFiiDii(fii) {
+      if (!fii) return;
+      const ft = fii.fii_today || {};
+      const dt = fii.dii_today || {};
+      const kpi = document.getElementById('resFiiKpiGrid');
+      if (kpi) {
+        kpi.innerHTML = `
+          <div class="res-kpi-card">
+            <div class="res-kpi-label">FII / FPI CASH (${fii.as_of || ''})</div>
+            <div class="res-kpi-val ${ft.net>=0?'text-green':'text-red'}">${ft.net>=0?'+':''}₹${Number(ft.net||0).toLocaleString()} Cr</div>
+            <div class="res-kpi-sub">Bought: ₹${Number(ft.bought||0).toLocaleString()} Cr &bull; Sold: ₹${Number(ft.sold||0).toLocaleString()} Cr</div>
+          </div>
+          <div class="res-kpi-card">
+            <div class="res-kpi-label">DII CASH FLOWS</div>
+            <div class="res-kpi-val ${dt.net>=0?'text-green':'text-red'}">${dt.net>=0?'+':''}₹${Number(dt.net||0).toLocaleString()} Cr</div>
+            <div class="res-kpi-sub">Bought: ₹${Number(dt.bought||0).toLocaleString()} Cr &bull; Sold: ₹${Number(dt.sold||0).toLocaleString()} Cr</div>
+          </div>
+          <div class="res-kpi-card">
+            <div class="res-kpi-label">COMBINED INSTITUTIONAL NET</div>
+            <div class="res-kpi-val ${(fii.combined_net||0)>=0?'text-green':'text-red'}">${(fii.combined_net||0)>=0?'+':''}₹${Number(fii.combined_net||0).toLocaleString()} Cr</div>
+            <div class="res-kpi-sub">Source: ${fii.source || 'NSE Daily Report'}</div>
+          </div>
+        `;
+      }
+
+      const rollBody = document.getElementById('resFiiRollingBody');
+      if (rollBody) {
+        rollBody.innerHTML = (fii.rolling_windows || []).map(w => `
+          <tr>
+            <td><b style="color:#fff;">${w.window}</b><div style="font-size:9.5px; color:#64748b;">${w.dates}</div></td>
+            <td style="font-family:'JetBrains Mono'; font-weight:700;" class="${w.fii_net.startsWith('+') ? 'text-green' : 'text-red'}">${w.fii_net}</td>
+            <td style="font-family:'JetBrains Mono'; font-weight:700;" class="${w.dii_net.startsWith('+') ? 'text-green' : 'text-red'}">${w.dii_net}</td>
+            <td style="font-family:'JetBrains Mono'; font-weight:700;" class="text-green">${w.nifty_ret}</td>
+          </tr>
+        `).join('');
+      }
+
+      const sessBody = document.getElementById('resFiiSessionsBody');
+      if (sessBody) {
+        sessBody.innerHTML = (fii.sessions || []).map(s => `
+          <tr>
+            <td style="font-weight:700; color:#fff;">${s.date}</td>
+            <td style="font-family:'JetBrains Mono';">₹${Number(s.fii_buy).toLocaleString()}</td>
+            <td style="font-family:'JetBrains Mono';">₹${Number(s.fii_sell).toLocaleString()}</td>
+            <td style="font-family:'JetBrains Mono'; font-weight:800;" class="${s.fii_net>=0?'text-green':'text-red'}">${s.fii_net>=0?'+':''}${Number(s.fii_net).toLocaleString()}</td>
+            <td style="font-family:'JetBrains Mono';">₹${Number(s.dii_buy).toLocaleString()}</td>
+            <td style="font-family:'JetBrains Mono';">₹${Number(s.dii_sell).toLocaleString()}</td>
+            <td style="font-family:'JetBrains Mono'; font-weight:800;" class="${s.dii_net>=0?'text-green':'text-red'}">${s.dii_net>=0?'+':''}${Number(s.dii_net).toLocaleString()}</td>
+            <td style="font-family:'JetBrains Mono'; font-size:11px; color:#38bdf8;">${s.nifty}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function drawFiiDiiChart(sessions) {
+      const canvas = document.getElementById('resFiiCanvas');
+      if (!canvas || !sessions || !sessions.length) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      const rows = sessions.slice(0, 8).reverse();
+      const maxAbs = Math.max(...rows.flatMap(r => [Math.abs(r.fii_net), Math.abs(r.dii_net)]), 1000);
+      const midY = H / 2;
+      ctx.strokeStyle = '#334155';
+      ctx.beginPath();
+      ctx.moveTo(20, midY);
+      ctx.lineTo(W - 20, midY);
+      ctx.stroke();
+
+      const slotW = (W - 60) / rows.length;
+      const barW = Math.min(18, slotW * 0.34);
+      rows.forEach((r, i) => {
+        const cx = 35 + i * slotW + slotW / 2;
+        const fH = (r.fii_net / maxAbs) * (midY - 28);
+        const dH = (r.dii_net / maxAbs) * (midY - 28);
+
+        ctx.fillStyle = r.fii_net >= 0 ? '#10b981' : '#ef4444';
+        ctx.fillRect(cx - barW - 2, r.fii_net >= 0 ? midY - fH : midY, barW, Math.abs(fH));
+
+        ctx.fillStyle = r.dii_net >= 0 ? '#38bdf8' : '#f59e0b';
+        ctx.fillRect(cx + 2, r.dii_net >= 0 ? midY - dH : midY, barW, Math.abs(dH));
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'center';
+        ctx.fillText(r.date.split(' ')[1]?.slice(0, 5) || r.date, cx, H - 6);
+      });
+      ctx.fillStyle = '#10b981'; ctx.fillRect(18, 10, 10, 10);
+      ctx.fillStyle = '#cbd5e1'; ctx.font = '10px Inter'; ctx.textAlign = 'left'; ctx.fillText('FII Net', 32, 19);
+      ctx.fillStyle = '#f59e0b'; ctx.fillRect(88, 10, 10, 10);
+      ctx.fillStyle = '#cbd5e1'; ctx.fillText('DII Net', 102, 19);
+    }
+
+    function renderResearchNiftyPe(pe) {
+      if (!pe) return;
+      const val = Number(pe.current_pe || 20.59);
+      document.getElementById('resPeMainVal').innerText = `${val.toFixed(2)}x`;
+      document.getElementById('resPeSubNote').innerText = `${pe.valuation_zone || ''} • ${pe.lower_percentile_note || ''}`;
+      const pct = Math.max(2, Math.min(98, ((val - 18.0) / (33.5 - 18.0)) * 100));
+      const pin = document.getElementById('resPeGaugePin');
+      if (pin) pin.style.left = `${pct}%`;
+
+      const yBody = document.getElementById('resPeYearlyBody');
+      if (yBody) {
+        yBody.innerHTML = (pe.yearly_history || []).map(y => `
+          <tr>
+            <td style="font-weight:800; color:#fff;">${y.year}</td>
+            <td style="font-family:'JetBrains Mono'; color:#38bdf8; font-weight:700;">${y.last_reading}</td>
+            <td style="font-family:'JetBrains Mono';" class="text-green">${y.low}</td>
+            <td style="font-family:'JetBrains Mono';" class="text-red">${y.high}</td>
+            <td style="font-size:10px; color:#94a3b8;">${y.basis}</td>
+          </tr>
+        `).join('');
+      }
+
+      const sBody = document.getElementById('resPeSectorsBody');
+      if (sBody) {
+        sBody.innerHTML = (pe.sector_valuations || []).map(s => `
+          <tr>
+            <td><b style="color:#fff;">${s.index}</b> <span style="font-size:9px; color:#64748b;">(${s.category})</span></td>
+            <td style="font-family:'JetBrains Mono'; font-weight:800; color:#ffb703;">${s.pe}</td>
+            <td style="font-family:'JetBrains Mono';">${s.pb}</td>
+            <td style="font-family:'JetBrains Mono';" class="text-green">${s.div_yield}</td>
+            <td style="font-family:'JetBrains Mono'; font-size:10.5px; color:#94a3b8;">${s.hist_low}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function filterResearchScreenCat(cat, btn) {
+      resScreenCategory = cat;
+      if (btn && btn.parentElement) {
+        btn.parentElement.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+      }
+      renderResearchScreenChips();
+    }
+
+    function renderResearchScreenChips() {
+      const grid = document.getElementById('resScreenChipGrid');
+      if (!grid) return;
+      const list = (resDataCache.screens || []).filter(s => resScreenCategory === 'ALL' || s.category === resScreenCategory);
+      grid.innerHTML = list.map(sc => `
+        <div class="screen-chip ${resActiveScreenId === sc.id ? 'active' : ''}" onclick="selectResearchScreen('${sc.id}', '${sc.name.replace(/'/g, "\\'")}')">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
+            <span style="font-size:11px; font-weight:800; color:#fff;">${sc.name}</span>
+            <span class="badge-touch">${sc.category}</span>
+          </div>
+          <div style="font-size:9.5px; color:#94a3b8; margin-top:3px;">${sc.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    async function selectResearchScreen(screenId, screenName) {
+      resActiveScreenId = screenId;
+      document.getElementById('resActiveScreenLabel').innerText = screenName || screenId;
+      renderResearchScreenChips();
+      const baseOrigin = (window.location.protocol === 'file:' || !window.location.host) ? 'http://127.0.0.1:8088' : '';
+      const res = await fetch(`${baseOrigin}/api/research/breakouts?screen_id=${encodeURIComponent(screenId)}`);
+      if (res.ok) {
+        const data = await res.json();
+        renderResearchBreakoutsTable(data);
+      }
+    }
+
+    function renderResearchBreakoutsTable(data) {
+      if (!data) return;
+      document.getElementById('resBreakoutMatchesCount').innerText = data.breakouts_count || 0;
+      document.getElementById('resBreakoutUniverseCount').innerText = data.total_universe_scanned || 224;
+      const tbody = document.getElementById('resBreakoutsBody');
+      if (!tbody) return;
+      const rows = data.breakouts || [];
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:#94a3b8;">No scrips currently match this screen.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(b => {
+        const isUp = b.change_pct >= 0;
+        return `
+          <tr style="cursor:pointer;" onclick="openStockTradingView('${b.symbol}', '${b.tv_symbol}')">
+            <td><b style="color:#fff;">${b.symbol}</b><div style="font-size:9.5px; color:#64748b;">${b.name}</div></td>
+            <td><span class="badge-touch">${b.sector}</span></td>
+            <td style="font-family:'JetBrains Mono'; font-weight:700;">₹${b.price.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
+            <td style="font-family:'JetBrains Mono'; font-weight:800;" class="${isUp?'text-green':'text-red'}">${isUp?'+':''}${b.change_pct.toFixed(2)}%</td>
+            <td style="font-family:'JetBrains Mono'; font-size:10.5px;">${b.open} / <span class="text-green">${b.high}</span> / <span class="text-red">${b.low}</span></td>
+            <td style="font-family:'JetBrains Mono'; color:#38bdf8;">${b.close_pos_pct}% High Range</td>
+            <td style="font-family:'JetBrains Mono';">${Number(b.volume).toLocaleString()}</td>
+            <td><span class="${isUp?'badge-long':'badge-short'}">${b.breakout_type}</span></td>
+            <td><button class="tv-btn" onclick="event.stopPropagation(); openStockTradingView('${b.symbol}', '${b.tv_symbol}')">📈 TV</button></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderResearchMtf(mtf) {
+      if (!mtf) return;
+      updateMtfCalculator();
+      const pBody = document.getElementById('resMtfPromoBody');
+      if (pBody) {
+        pBody.innerHTML = (mtf.promo_plans || []).map(p => `
+          <tr>
+            <td style="font-weight:800; color:#fff;">${p.broker}</td>
+            <td style="font-family:'JetBrains Mono'; color:#2ecc71; font-weight:800;">${p.rate_pa}% p.a.</td>
+            <td style="font-family:'JetBrains Mono';">${Number(p.stocks_funded).toLocaleString()}</td>
+            <td style="font-size:10.5px; color:#94a3b8;">${p.applies}</td>
+          </tr>
+        `).join('');
+      }
+      const mBody = document.getElementById('resMtfMarginsBody');
+      if (mBody) {
+        mBody.innerHTML = (mtf.sample_stock_margins || []).map(m => `
+          <tr>
+            <td style="font-weight:800; color:#fff;">${m.symbol}</td>
+            <td style="font-family:'JetBrains Mono';">${m.upstox}</td>
+            <td style="font-family:'JetBrains Mono';">${m.zerodha}</td>
+            <td style="font-family:'JetBrains Mono';">${m.groww}</td>
+            <td style="font-family:'JetBrains Mono'; color:#2ecc71; font-weight:700;">${m.dhan}</td>
+            <td style="font-family:'JetBrains Mono';">${m.kotak}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function updateMtfCalculator() {
+      const mtf = resDataCache.mtf;
+      if (!mtf) return;
+      const amt = Number(document.getElementById('mtfCalcAmount')?.value || 100000);
+      const days = Number(document.getElementById('mtfCalcDays')?.value || 90);
+      document.getElementById('mtfCalcAmtLabel').innerText = `₹${amt.toLocaleString()}`;
+
+      const std = mtf.standard_brokers || [];
+      const stdBody = document.getElementById('resMtfStdBody');
+      if (stdBody) {
+        stdBody.innerHTML = std.map(b => {
+          const interest = Math.round(amt * (b.rate_pa / 100.0) * (days / 365.0));
+          return `
+            <tr>
+              <td><b style="color:#fff;">${b.broker}</b><div style="font-size:9px; color:#64748b;">${b.max_lev} • ${b.notes}</div></td>
+              <td style="font-family:'JetBrains Mono'; font-weight:800; color:${b.rate_pa<=13?'#2ecc71':'#ffb703'};">${b.rate_pa}%</td>
+              <td style="font-family:'JetBrains Mono';">${b.daily_per_lakh}</td>
+              <td style="font-family:'JetBrains Mono'; font-weight:800; color:#38bdf8;">₹${interest.toLocaleString()}</td>
+              <td style="font-size:10px; color:#94a3b8;">${b.pledge_fee}</td>
+              <td style="font-family:'JetBrains Mono';">${Number(b.stocks_funded).toLocaleString()}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+      if (std.length >= 2) {
+        const lowCost = Math.round(amt * (std[0].rate_pa / 100.0) * (days / 365.0));
+        const highCost = Math.round(amt * (std[std.length - 1].rate_pa / 100.0) * (days / 365.0));
+        document.getElementById('mtfCalcSummary').innerText =
+          `For ₹${amt.toLocaleString()} (${days}d): Dhan ₹${lowCost.toLocaleString()} vs Upstox ₹${highCost.toLocaleString()} (Save ₹${(highCost - lowCost).toLocaleString()})`;
+      }
+    }
+
+    function renderResearchEvents(ev) {
+      if (!ev) return;
+      const annBody = document.getElementById('resAnnBody');
+      if (annBody) {
+        annBody.innerHTML = (ev.announcements || []).map(a => `
+          <tr>
+            <td style="font-family:'JetBrains Mono'; font-size:10px; color:#f1c40f; white-space:nowrap;">${a.time}</td>
+            <td><b style="color:#fff;">${a.symbol}</b></td>
+            <td><span class="badge-touch">${a.category}</span></td>
+            <td style="font-size:11px; color:#cbd5e1;">${a.headline}</td>
+          </tr>
+        `).join('');
+      }
+      const rBody = document.getElementById('resResultsBody');
+      if (rBody) {
+        rBody.innerHTML = (ev.results_calendar || []).map(r => `
+          <tr>
+            <td style="font-family:'JetBrains Mono'; font-size:10.5px;">${r.date}</td>
+            <td><b style="color:#38bdf8;">${r.symbol}</b></td>
+            <td style="font-size:11px;">${r.company}</td>
+            <td style="font-size:10.5px; color:#94a3b8;">${r.timing_flag}</td>
+          </tr>
+        `).join('');
+      }
+      const iBody = document.getElementById('resIpoBody');
+      if (iBody) {
+        iBody.innerHTML = (ev.ipos || []).map(ip => `
+          <tr>
+            <td><b style="color:#fff;">${ip.name}</b><div style="font-size:9.5px; color:#38bdf8;">${ip.type}</div></td>
+            <td style="font-size:10.5px;">${ip.dates}</td>
+            <td style="font-family:'JetBrains Mono'; font-weight:700;">${ip.price_band}</td>
+            <td style="font-family:'JetBrains Mono'; font-size:10.5px;">${ip.lot_size} (${ip.min_invest})</td>
+            <td><span class="badge-touch">${ip.status}</span></td>
+          </tr>
+        `).join('');
+      }
+      const aBody = document.getElementById('resAristocratsBody');
+      if (aBody) {
+        aBody.innerHTML = (ev.aristocrats || []).map(ar => {
+          const isUp = (ar.change_pct || 0) >= 0;
+          return `
+            <tr style="cursor:pointer;" onclick="openStockTradingView('${ar.symbol}', 'NSE:${ar.symbol}')">
+              <td style="color:#64748b; font-weight:700;">#${ar.rank}</td>
+              <td><b style="color:#fff;">${ar.symbol}</b></td>
+              <td><span class="badge-trap">${ar.streak}</span></td>
+              <td style="font-family:'JetBrains Mono'; font-weight:800;" class="text-green">${ar.yield}</td>
+              <td style="font-family:'JetBrains Mono'; color:#38bdf8;">${ar.growth_5y}</td>
+              <td style="font-family:'JetBrains Mono';">${ar.ttm_div}</td>
+              <td style="font-family:'JetBrains Mono'; font-weight:700;">₹${Number(ar.live_price || ar.base_price).toLocaleString()}</td>
+              <td style="font-family:'JetBrains Mono'; font-weight:700;" class="${isUp?'text-green':'text-red'}">${isUp?'+':''}${Number(ar.change_pct || 0).toFixed(2)}%</td>
+              <td><button class="tv-btn" onclick="event.stopPropagation(); openStockTradingView('${ar.symbol}', 'NSE:${ar.symbol}')">📈 TV</button></td>
+            </tr>
+          `;
+        }).join('');
+      }
     }
 
   </script>
