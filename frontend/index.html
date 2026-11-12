@@ -6,27 +6,42 @@
   <title>Dhan Muhurat | 224 F&amp;O Indices &amp; Stocks Live Terminal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-main: #0c0d0e;
-      --bg-panel: #141618;
-      --bg-panel-header: #1b1e22;
-      --bg-accent: #21252b;
-      --border-color: #282c34;
-      --text-main: #d7dae0;
-      --text-muted: #828997;
-      --green: #2ecc71;
-      --green-bg: rgba(46, 204, 113, 0.15);
-      --red: #e74c3c;
-      --red-bg: rgba(231, 76, 60, 0.15);
-      --orange: #e67e22;
-      --orange-bg: rgba(230, 126, 34, 0.15);
-      --blue: #3498db;
-      --blue-bg: rgba(52, 152, 219, 0.15);
-      --yellow: #f1c40f;
-      --purple: #9b59b6;
+      /* Vision UI Dashboard Figma Design System Tokens */
+      --bg-main: #060b28;
+      --bg-navy-deep: #020515;
+      --bg-navy-mid: #090d2e;
+      --bg-navy-top: #0f123b;
+      --bg-panel: rgba(6, 11, 40, 0.74);
+      --bg-panel-solid: #0b1132;
+      --bg-panel-header: rgba(15, 21, 53, 0.85);
+      --bg-accent: #1a1f37;
+      --border-color: rgba(226, 232, 240, 0.12);
+      --border-glow: rgba(0, 117, 255, 0.35);
+      --text-main: #f8fafc;
+      --text-secondary: #cbd5e0;
+      --text-muted: #a0aec0;
+      --vision-primary: #4318ff;
+      --vision-blue: #0075ff;
+      --vision-purple: #7551ff;
+      --vision-teal: #4fd1c5;
+      --green: #01b574;
+      --green-bg: rgba(1, 181, 116, 0.16);
+      --red: #e31a1a;
+      --red-bg: rgba(227, 26, 26, 0.16);
+      --orange: #f6ad55;
+      --orange-bg: rgba(246, 173, 85, 0.16);
+      --blue: #0075ff;
+      --blue-bg: rgba(0, 117, 255, 0.18);
+      --yellow: #ffb547;
+      --purple: #7551ff;
       --fox-orange: #ff6b35;
+      --ob-teal: #2ee6d6;
+      --ob-emerald: #10e092;
+      --vision-glass-grad: linear-gradient(147.39deg, rgba(6, 11, 40, 0.78) 28.25%, rgba(10, 14, 35, 0.72) 91.2%);
+      --vision-sidebar-grad: linear-gradient(95.33deg, rgba(6, 11, 38, 0.94) 59.3%, rgba(26, 31, 55, 0.74) 100%);
     }
 
     * {
@@ -2210,6 +2225,483 @@
       box-shadow: 0 0 8px #fff;
     }
 
+    /* =====================================================================
+       VISION UI FIGMA GLASSMORPHIC THEME & ORDER-BLOCK.COM KINETIC ANIMATIONS
+       ===================================================================== */
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      background-color: var(--bg-navy-deep) !important;
+      background-image:
+        radial-gradient(circle at 12% 14%, rgba(0, 117, 255, 0.28) 0%, transparent 42%),
+        radial-gradient(circle at 86% 18%, rgba(67, 24, 255, 0.24) 0%, transparent 45%),
+        radial-gradient(circle at 52% 85%, rgba(79, 209, 197, 0.12) 0%, transparent 50%),
+        linear-gradient(161.72deg, rgb(15, 18, 59) 14.25%, rgb(9, 13, 46) 56.45%, rgb(2, 5, 21) 86.14%) !important;
+      background-attachment: fixed;
+      color: var(--text-main);
+    }
+
+    /* Vision UI Header, Topbar & Ribbon */
+    .fox-topbar {
+      background: linear-gradient(90deg, rgba(6, 11, 38, 0.92), rgba(15, 18, 59, 0.88)) !important;
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.12) !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+    }
+
+    .indices-ribbon {
+      background: rgba(6, 11, 38, 0.72) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.1) !important;
+    }
+
+    .index-item:hover {
+      background: rgba(0, 117, 255, 0.18) !important;
+      border-radius: 8px !important;
+    }
+
+    .module-nav {
+      background: rgba(9, 13, 46, 0.65) !important;
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.1) !important;
+    }
+
+    .module-tab {
+      border-radius: 10px !important;
+      transition: all 0.22s cubic-bezier(.22, .61, .36, 1) !important;
+    }
+
+    .module-tab.active {
+      background: linear-gradient(135deg, rgba(0, 117, 255, 0.26), rgba(117, 81, 255, 0.22)) !important;
+      color: #fff !important;
+      border: 1px solid rgba(79, 209, 197, 0.45) !important;
+      box-shadow: 0 4px 14px rgba(0, 117, 255, 0.25);
+    }
+
+    /* Vision UI Sidebar Styling (580:4269) */
+    .fox-left-sidebar {
+      background: var(--vision-sidebar-grad) !important;
+      backdrop-filter: blur(36px);
+      -webkit-backdrop-filter: blur(36px);
+      border-right: 1px solid rgba(226, 232, 240, 0.12) !important;
+      box-shadow: 6px 0 30px rgba(2, 5, 21, 0.45);
+    }
+
+    .sidebar-item {
+      margin: 3px 10px !important;
+      padding: 8px 10px !important;
+      border-radius: 15px !important;
+      border-left: none !important;
+      color: #cbd5e0 !important;
+      transition: all 0.22s cubic-bezier(.22, .61, .36, 1) !important;
+    }
+
+    .fox-left-sidebar.collapsed .sidebar-item {
+      margin: 4px 6px !important;
+      padding: 8px 0 !important;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(26, 31, 55, 0.72) !important;
+      color: #ffffff !important;
+      transform: translateX(2px);
+    }
+
+    .sidebar-icon {
+      width: 30px !important;
+      height: 30px !important;
+      min-width: 30px !important;
+      border-radius: 11px !important;
+      background: #1a1f37 !important;
+      box-shadow: 0 3.5px 5.5px rgba(0, 0, 0, 0.18);
+      transition: all 0.22s ease;
+    }
+
+    .sidebar-item.active {
+      background: #1a1f37 !important;
+      border-left: none !important;
+      color: #ffffff !important;
+      font-weight: 700 !important;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(0, 117, 255, 0.35) !important;
+    }
+
+    .sidebar-item.active .sidebar-icon {
+      background: linear-gradient(135deg, #0075ff 0%, #4318ff 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 16px rgba(0, 117, 255, 0.65) !important;
+    }
+
+    /* Vision UI Glassmorphic Cards & Panels (580:4034) */
+    .workspace-area {
+      background: transparent !important;
+    }
+
+    #view-desktop.view-container.active {
+      flex-direction: column;
+      overflow: hidden;
+      gap: 6px;
+      padding: 6px;
+    }
+
+    .desktop-layout {
+      flex: 1;
+      min-height: 0;
+      background-color: transparent !important;
+      gap: 8px !important;
+    }
+
+    .fox-panel,
+    .chart-box,
+    .smc-card,
+    .res-kpi-card,
+    .sr-index-card,
+    .perf-kpi-card,
+    .screen-chip {
+      background: var(--vision-glass-grad) !important;
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
+      border: 1px solid rgba(226, 232, 240, 0.13) !important;
+      border-radius: 16px !important;
+      box-shadow: 0 10px 30px rgba(2, 5, 21, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+      transition: transform 0.22s cubic-bezier(.22, .61, .36, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .fox-panel:hover,
+    .smc-card:hover,
+    .res-kpi-card:hover,
+    .sr-index-card:hover,
+    .perf-kpi-card:hover {
+      border-color: rgba(79, 209, 197, 0.34) !important;
+      box-shadow: 0 14px 36px rgba(0, 117, 255, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.09) !important;
+    }
+
+    .panel-header,
+    .chart-toolbar {
+      background: linear-gradient(90deg, rgba(15, 21, 53, 0.92), rgba(26, 31, 55, 0.72)) !important;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.1) !important;
+      padding: 8px 12px !important;
+    }
+
+    .fox-table th {
+      background: rgba(15, 21, 53, 0.85) !important;
+      color: var(--text-muted) !important;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.1) !important;
+      font-weight: 600;
+    }
+
+    .fox-table td {
+      border-bottom: 1px solid rgba(226, 232, 240, 0.06) !important;
+    }
+
+    .fox-table tbody tr:hover {
+      background: rgba(0, 117, 255, 0.12) !important;
+    }
+
+    .fox-btn {
+      border-radius: 10px !important;
+      border: 1px solid rgba(226, 232, 240, 0.14) !important;
+      transition: all 0.2s cubic-bezier(.22, .61, .36, 1) !important;
+    }
+
+    .fox-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 117, 255, 0.25);
+    }
+
+    /* Smooth View Entrance (OrderBlock rise + Vision fade) */
+    .view-container.active {
+      animation: obRiseFade 0.42s cubic-bezier(.22, .61, .36, 1) both;
+    }
+
+    /* =====================================================================
+       ORDER-BLOCK.COM KEYFRAMES & LIVE RADAR ANIMATION STRIP
+       ===================================================================== */
+    @keyframes obRiseFade {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes obH1Zone {
+      0%, 10%   { opacity: 0; transform: scaleX(0); }
+      22%, 68%  { opacity: 1; transform: scaleX(1); }
+      84%, 100% { opacity: 0; transform: scaleX(1); }
+    }
+
+    @keyframes obH1Sweep {
+      0%, 10%   { left: -6px; opacity: 0; }
+      15%       { opacity: 1; }
+      72%       { left: calc(100% - 4px); opacity: 1; }
+      85%, 100% { left: calc(100% - 4px); opacity: 0; }
+    }
+
+    @keyframes obHwScan {
+      0%   { left: -12%; opacity: 0; }
+      14%  { opacity: 0.7; }
+      86%  { opacity: 0.7; }
+      100% { left: 106%; opacity: 0; }
+    }
+
+    @keyframes obHwPing {
+      0%, 100% { transform: scale(0.92); opacity: 0.9; }
+      50%      { transform: scale(1.18); opacity: 1; }
+    }
+
+    @keyframes obHwRing {
+      0%   { transform: translate(-50%, -50%) scale(0.45); opacity: 0.95; }
+      100% { transform: translate(-50%, -50%) scale(2.1); opacity: 0; }
+    }
+
+    @keyframes obHwGlow {
+      0%, 100% { border-color: rgba(46, 230, 214, 0.26); box-shadow: 0 8px 28px rgba(0, 117, 255, 0.16); }
+      50%      { border-color: rgba(16, 224, 146, 0.56); box-shadow: 0 8px 32px rgba(46, 230, 214, 0.26); }
+    }
+
+    @keyframes obHwGlint {
+      0%, 35%  { background-position: -180% 0; opacity: 0; }
+      52%      { opacity: 1; }
+      68%, 100%{ background-position: 220% 0; opacity: 0; }
+    }
+
+    @keyframes obPhFloat {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-3px); }
+    }
+
+    .ob-hero-strip {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 9px 16px;
+      border-radius: 16px;
+      background: linear-gradient(112deg, rgba(6, 11, 40, 0.88) 0%, rgba(15, 24, 68, 0.82) 55%, rgba(10, 14, 35, 0.9) 100%);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(46, 230, 214, 0.3);
+      overflow: hidden;
+      flex-shrink: 0;
+      animation: obHwGlow 5.5s ease-in-out infinite;
+    }
+
+    /* Sweeping scanner laser across the OrderBlock banner */
+    .ob-hero-strip::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 110px;
+      background: linear-gradient(90deg, transparent, rgba(46, 230, 214, 0.14), rgba(0, 117, 255, 0.18), transparent);
+      transform: skewX(-18deg);
+      pointer-events: none;
+      animation: obHwScan 5.2s cubic-bezier(.4, 0, .2, 1) infinite;
+    }
+
+    .ob-hero-strip::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.06) 50%, transparent 65%);
+      background-size: 220% 100%;
+      pointer-events: none;
+      animation: obHwGlint 7s ease-in-out infinite;
+    }
+
+    .ob-hero-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      z-index: 2;
+      min-width: 0;
+    }
+
+    .ob-radar-node {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: rgba(1, 181, 116, 0.14);
+      border: 1px solid rgba(16, 224, 146, 0.45);
+    }
+
+    .ob-radar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10e092;
+      box-shadow: 0 0 10px #10e092;
+      animation: obHwPing 1.8s ease-in-out infinite;
+    }
+
+    .ob-radar-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(46, 230, 214, 0.75);
+      pointer-events: none;
+      animation: obHwRing 2.2s ease-out infinite;
+    }
+
+    .ob-hero-title {
+      font-family: 'Inter Tight', 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: -0.015em;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Order-Block.com `.h1-ob` animated zone box */
+    .h1-ob {
+      position: relative;
+      display: inline-block;
+      padding: 1px 8px 2px;
+      margin: 0 1px;
+      color: #4fd1c5;
+    }
+
+    .h1-ob span {
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(90deg, #10e092, #4fd1c5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .h1-ob::before {
+      content: "";
+      position: absolute;
+      inset: 1px 0;
+      border-radius: 6px;
+      background: linear-gradient(90deg, rgba(16, 224, 146, 0.24), rgba(46, 230, 214, 0.08));
+      transform-origin: 0 50%;
+      animation: obH1Zone 5.8s cubic-bezier(.4, 0, .2, 1) infinite;
+      pointer-events: none;
+    }
+
+    .h1-ob::after {
+      content: "";
+      position: absolute;
+      inset: 1px 0;
+      border-radius: 6px;
+      padding: 1px;
+      background: linear-gradient(90deg, #10e092 0%, rgba(46, 230, 214, 0.28) 70%, transparent 100%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      transform-origin: 0 50%;
+      animation: obH1Zone 5.8s cubic-bezier(.4, 0, .2, 1) infinite;
+      pointer-events: none;
+    }
+
+    /* Order-Block.com `.h1-liq` dashed liquidity line + sweeping glowing orb */
+    .h1-liq {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 4px;
+      color: #e2e8f0;
+    }
+
+    .h1-liq::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1.5px;
+      background: repeating-linear-gradient(90deg, #f6ad55 0 5px, transparent 5px 9px);
+      opacity: 0.78;
+    }
+
+    .h1-liq::after {
+      content: "";
+      position: absolute;
+      bottom: -3px;
+      left: -6px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ffb547;
+      box-shadow: 0 0 10px #ffb547, 0 0 18px rgba(246, 173, 85, 0.85);
+      animation: obH1Sweep 5.8s cubic-bezier(.4, 0, .2, 1) infinite;
+    }
+
+    .ob-hero-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      z-index: 2;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .ob-hero-right::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ob-telemetry-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 12px;
+      background: rgba(26, 31, 55, 0.78);
+      border: 1px solid rgba(226, 232, 240, 0.14);
+      font-size: 11px;
+      font-weight: 600;
+      color: #cbd5e0;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .ob-telemetry-pill:hover {
+      border-color: rgba(79, 209, 197, 0.55);
+      background: rgba(0, 117, 255, 0.22);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .ob-pill-float {
+      animation: obPhFloat 4.2s ease-in-out infinite;
+    }
+
+    @media (max-width: 900px) {
+      .ob-hero-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px 12px;
+        gap: 8px;
+      }
+      .ob-hero-title {
+        font-size: 12.5px;
+        white-space: normal;
+      }
+      .ob-hero-right {
+        width: 100%;
+        padding-bottom: 2px;
+      }
+      #view-desktop.view-container.active {
+        overflow-y: auto;
+      }
+    }
+
   </style>
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script>
@@ -2754,6 +3246,41 @@
         <button class="m-subpane-btn" id="btnSubpaneCharts" onclick="switchMobileSubpane('charts')">📊 Live Charts</button>
         <button class="m-subpane-btn" id="btnSubpaneAll" onclick="switchMobileSubpane('all')">📑 Stack All</button>
       </div>
+
+      <!-- OrderBlock.com Kinetic Live Hero & Telemetry Radar Strip -->
+      <div class="ob-hero-strip" id="obLiveAnimBar">
+        <div class="ob-hero-left">
+          <div class="ob-radar-node" title="Real-Time Order Block & Liquidity Radar">
+            <span class="ob-radar-ring"></span>
+            <span class="ob-radar-dot"></span>
+          </div>
+          <div class="ob-hero-title">
+            See Live
+            <span class="h1-ob"><span>Order Block</span></span>
+            &amp;
+            <span class="h1-liq">Liquidity</span>
+            Sweeps
+          </div>
+        </div>
+        <div class="ob-hero-right">
+          <div class="ob-telemetry-pill ob-pill-float" id="obDemandPill" onclick="selectLeftSidebarView('smc')" title="Open Institutional SMC & Order Blocks">
+            <span style="width:7px;height:7px;border-radius:50%;background:#01b574;box-shadow:0 0 8px #01b574;"></span>
+            <span>Demand OB:</span>
+            <strong id="obDemandVal" style="color:#4fd1c5;font-family:'JetBrains Mono',monospace;">Scanning...</strong>
+          </div>
+          <div class="ob-telemetry-pill" id="obSupplyPill" onclick="selectLeftSidebarView('smc')" title="Open Institutional SMC & Order Blocks">
+            <span style="width:7px;height:7px;border-radius:50%;background:#e31a1a;box-shadow:0 0 8px #e31a1a;"></span>
+            <span>Supply OB:</span>
+            <strong id="obSupplyVal" style="color:#f6ad55;font-family:'JetBrains Mono',monospace;">Scanning...</strong>
+          </div>
+          <div class="ob-telemetry-pill" id="obSweepPill" onclick="selectLeftSidebarView('sr-engine')" title="Open S&R Master AI & Liquidity Traps">
+            <span style="width:7px;height:7px;border-radius:50%;background:#0075ff;box-shadow:0 0 8px #0075ff;"></span>
+            <span>Liquidity Sweep:</span>
+            <strong id="obSweepVal" style="color:#fff;font-family:'JetBrains Mono',monospace;">Radar Active</strong>
+          </div>
+        </div>
+      </div>
+
       <div class="desktop-layout">
         
         <!-- Pane 1: Market Watch (224 Instruments + Filters) -->
@@ -4915,10 +5442,54 @@
       renderChart(chartNum);
     }
 
-    // Chart Renderer
+    // Sync OrderBlock Live Telemetry Strip from Primary Chart SMC Data
+    function updateObTelemetryStrip(smcData, symbol) {
+      try {
+        if (!smcData) return;
+        const obs = smcData.orderBlocks || [];
+        const sweeps = smcData.sweeps || [];
+        const lastDemand = [...obs].reverse().find(o => o.type && o.type.includes('bull'));
+        const lastSupply = [...obs].reverse().find(o => o.type && o.type.includes('bear'));
+        const lastSweep = sweeps.length ? sweeps[sweeps.length - 1] : null;
+
+        const dEl = document.getElementById('obDemandVal');
+        const sEl = document.getElementById('obSupplyVal');
+        const swEl = document.getElementById('obSweepVal');
+        if (dEl) dEl.innerText = lastDemand ? `${symbol} ₹${lastDemand.bottom.toFixed(1)}–${lastDemand.top.toFixed(1)}` : `${symbol} Watching`;
+        if (sEl) sEl.innerText = lastSupply ? `${symbol} ₹${lastSupply.bottom.toFixed(1)}–${lastSupply.top.toFixed(1)}` : `${symbol} Watching`;
+        if (swEl) swEl.innerText = lastSweep ? `${lastSweep.type.includes('bull') ? 'SSL' : 'BSL'} ₹${Number(lastSweep.sweptPrice || 0).toFixed(1)}` : 'Radar Active';
+      } catch (e) {}
+    }
+
+    // Continuous smooth ~13fps canvas animation loop for active OrderBlock & Liquidity sweeps
+    let _obAnimLastTs = 0;
+    let _obAnimStarted = false;
+    function startObChartAnimLoop() {
+      if (_obAnimStarted) return;
+      _obAnimStarted = true;
+      function tick(ts) {
+        if (ts - _obAnimLastTs >= 75) {
+          _obAnimLastTs = ts;
+          const desk = document.getElementById('view-desktop');
+          if (desk && desk.classList.contains('active')) {
+            if (chartCache[1] && !showPnF[1]) renderChart(1);
+            if (chartCache[2] && !showPnF[2]) renderChart(2);
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // Chart Renderer (Vision UI Palette + OrderBlock & Liquidity Sweep Kinetic Overlays)
     function renderChart(chartNum) {
       const data = chartCache[chartNum];
       if (!data) return;
+
+      if (chartNum === 1 && data.smc) {
+        updateObTelemetryStrip(data.smc, currentChartSym[1] || 'NIFTY');
+      }
+      startObChartAnimLoop();
 
       const canvas = document.getElementById(`canvasChart${chartNum}`);
       if (!canvas) return;
@@ -4943,6 +5514,9 @@
       const candles = data.candles || [];
       if (candles.length === 0) return;
 
+      const animPhase = (performance.now() % 4200) / 4200;
+      const pulseAlpha = 0.55 + 0.45 * Math.sin(animPhase * Math.PI * 2);
+
       const topHeight = height * 0.70;
       const volHeight = height * 0.15;
       const macdHeight = height * 0.15;
@@ -4955,8 +5529,8 @@
       const barWidth = width / candles.length;
       const pad = 2;
 
-      // Price Grid
-      ctx.strokeStyle = '#1e2227';
+      // Vision UI Price Grid
+      ctx.strokeStyle = 'rgba(226, 232, 240, 0.08)';
       ctx.lineWidth = 1;
       for (let i = 1; i <= 4; i++) {
         const y = (topHeight / 5) * i;
@@ -4966,16 +5540,48 @@
         ctx.stroke();
 
         const pVal = maxP - (rangeP / 5) * i;
-        ctx.fillStyle = '#5c6370';
+        ctx.fillStyle = '#a0aec0';
         ctx.font = '10px JetBrains Mono';
-        ctx.fillText(pVal.toFixed(2), width - 55, y - 3);
+        ctx.fillText(pVal.toFixed(2), width - 58, y - 3);
       }
 
-      // Draw Candlesticks & Volume
+      // SMC Overlay 1: Kinetic Order Blocks (Supply / Demand Zones) behind candles
+      if (data.smc && data.smc.orderBlocks) {
+        data.smc.orderBlocks.slice(-3).forEach(ob => {
+          const yTop = topHeight - ((ob.top - minP) / rangeP) * (topHeight - 20) - 10;
+          const yBottom = topHeight - ((ob.bottom - minP) / rangeP) * (topHeight - 20) - 10;
+          const boxH = Math.max(8, Math.abs(yBottom - yTop));
+          const startX = Math.max(0, (ob.index || 0) * barWidth);
+          const obW = Math.max(24, width - startX);
+          const isBull = ob.type && ob.type.includes('bull');
+
+          const grad = ctx.createLinearGradient(startX, yTop, startX + obW, yTop);
+          if (isBull) {
+            grad.addColorStop(0, `rgba(1, 181, 116, ${0.14 + 0.10 * pulseAlpha})`);
+            grad.addColorStop(1, 'rgba(79, 209, 197, 0.02)');
+          } else {
+            grad.addColorStop(0, `rgba(227, 26, 26, ${0.14 + 0.10 * pulseAlpha})`);
+            grad.addColorStop(1, 'rgba(246, 173, 85, 0.02)');
+          }
+          ctx.fillStyle = grad;
+          ctx.fillRect(startX, yTop, obW, boxH);
+
+          ctx.strokeStyle = isBull ? `rgba(79, 209, 197, ${0.45 + 0.4 * pulseAlpha})` : `rgba(246, 173, 85, ${0.45 + 0.4 * pulseAlpha})`;
+          ctx.lineWidth = 1.25;
+          ctx.strokeRect(startX, yTop, obW, boxH);
+
+          // OB Badge Tag
+          ctx.fillStyle = isBull ? '#4fd1c5' : '#f6ad55';
+          ctx.font = 'bold 9px JetBrains Mono';
+          ctx.fillText(isBull ? 'OB DEMAND' : 'OB SUPPLY', startX + 4, yTop + 10);
+        });
+      }
+
+      // Draw Candlesticks & Volume (Vision UI Colors)
       candles.forEach((c, idx) => {
         const x = idx * barWidth;
         const isGreen = c.close >= c.open;
-        const color = isGreen ? '#2ecc71' : '#e74c3c';
+        const color = isGreen ? '#01b574' : '#e31a1a';
 
         // Wick
         const yHigh = topHeight - ((c.high - minP) / rangeP) * (topHeight - 20) - 10;
@@ -4998,12 +5604,12 @@
         // Volume Bar
         const vH = (c.volume / maxVol) * (volHeight - 10);
         const vY = topHeight + volHeight - vH;
-        ctx.fillStyle = isGreen ? 'rgba(46, 204, 113, 0.35)' : 'rgba(231, 76, 60, 0.35)';
+        ctx.fillStyle = isGreen ? 'rgba(1, 181, 116, 0.35)' : 'rgba(227, 26, 26, 0.35)';
         ctx.fillRect(x + pad, vY, Math.max(1, barWidth - pad * 2), vH);
       });
 
-      // EMA 50 line
-      ctx.strokeStyle = '#f1c40f';
+      // EMA 50 line (Vision Amber)
+      ctx.strokeStyle = '#ffb547';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       candles.forEach((c, idx) => {
@@ -5013,8 +5619,8 @@
       });
       ctx.stroke();
 
-      // EMA 200 line
-      ctx.strokeStyle = '#3498db';
+      // EMA 200 line (Vision Teal)
+      ctx.strokeStyle = '#4fd1c5';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       candles.forEach((c, idx) => {
@@ -5024,7 +5630,7 @@
       });
       ctx.stroke();
 
-      // SMC Overlay: Shaded FVGs
+      // SMC Overlay 2: Shaded FVGs
       if (data.smc && data.smc.fvgs) {
         data.smc.fvgs.slice(-4).forEach(fvg => {
           const yTop = topHeight - ((fvg.top - minP) / rangeP) * (topHeight - 20) - 10;
@@ -5032,8 +5638,8 @@
           const startX = fvg.startIndex * barWidth;
           const fvgW = width - startX;
 
-          ctx.fillStyle = fvg.type === 'bullish' ? 'rgba(46, 204, 113, 0.12)' : 'rgba(231, 76, 60, 0.12)';
-          ctx.strokeStyle = fvg.type === 'bullish' ? '#2ecc71' : '#e74c3c';
+          ctx.fillStyle = fvg.type === 'bullish' ? 'rgba(79, 209, 197, 0.11)' : 'rgba(227, 26, 26, 0.11)';
+          ctx.strokeStyle = fvg.type === 'bullish' ? '#4fd1c5' : '#e31a1a';
           ctx.lineWidth = 1;
           ctx.setLineDash([3, 3]);
           ctx.fillRect(startX, yTop, fvgW, Math.abs(yBottom - yTop));
@@ -5042,11 +5648,54 @@
         });
       }
 
+      // SMC Overlay 3: OrderBlock.com Animated Liquidity Sweep Line & Sweeping Glowing Orb
+      if (data.smc && data.smc.sweeps) {
+        data.smc.sweeps.slice(-2).forEach((sw, sIdx) => {
+          const priceVal = Number(sw.sweptPrice || 0);
+          if (!priceVal) return;
+          const ySw = topHeight - ((priceVal - minP) / rangeP) * (topHeight - 20) - 10;
+          if (ySw < 6 || ySw > topHeight - 6) return;
+          const startX = Math.max(0, (sw.index || 0) * barWidth);
+
+          ctx.strokeStyle = '#f6ad55';
+          ctx.lineWidth = 1.4;
+          ctx.setLineDash([5, 4]);
+          ctx.beginPath();
+          ctx.moveTo(startX, ySw);
+          ctx.lineTo(width, ySw);
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          // Animated sweeping cursor orb along dashed liquidity line
+          const sweepProg = (animPhase + sIdx * 0.45) % 1;
+          const orbX = startX + sweepProg * Math.max(20, width - startX);
+          ctx.save();
+          ctx.fillStyle = '#ffb547';
+          ctx.shadowColor = '#ffb547';
+          ctx.shadowBlur = 12;
+          ctx.beginPath();
+          ctx.arc(orbX, ySw, 3.6, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Radar ring around orb
+          ctx.strokeStyle = `rgba(255, 181, 71, ${1 - sweepProg})`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.arc(orbX, ySw, 3.6 + sweepProg * 9, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+
+          ctx.fillStyle = '#ffb547';
+          ctx.font = 'bold 9px JetBrains Mono';
+          ctx.fillText(sw.type && sw.type.includes('bull') ? 'LIQ SWEEP ↓' : 'LIQ SWEEP ↑', Math.min(width - 78, startX + 4), ySw - 4);
+        });
+      }
+
       // MACD Sub-pane at bottom
       const macdBaseY = topHeight + volHeight;
-      ctx.fillStyle = '#0c0d0e';
+      ctx.fillStyle = 'rgba(2, 5, 21, 0.72)';
       ctx.fillRect(0, macdBaseY, width, macdHeight);
-      ctx.strokeStyle = '#282c34';
+      ctx.strokeStyle = 'rgba(226, 232, 240, 0.12)';
       ctx.beginPath();
       ctx.moveTo(0, macdBaseY);
       ctx.lineTo(width, macdBaseY);
@@ -5057,7 +5706,7 @@
       candles.forEach((c, idx) => {
         const x = idx * barWidth;
         const hY = c.hist * 3.5;
-        ctx.fillStyle = c.hist >= 0 ? '#2ecc71' : '#e74c3c';
+        ctx.fillStyle = c.hist >= 0 ? '#01b574' : '#e31a1a';
         ctx.fillRect(x + pad, macdZero - (c.hist >= 0 ? hY : 0), Math.max(1, barWidth - pad * 2), Math.abs(hY));
       });
     }
